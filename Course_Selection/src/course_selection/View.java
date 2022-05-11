@@ -5,6 +5,7 @@
  */
 package course_selection;
 
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
@@ -31,7 +32,8 @@ class View extends JFrame implements Observer {
     private JLabel regPw = new JLabel("Password: ");
     private JLabel uName = new JLabel("Username: ");
     private JLabel pw = new JLabel("Password: ");
-    private JLabel message = new JLabel("Welcome to the Course Selection Program!");
+    private JLabel logMessage = new JLabel("Welcome to the Course Selection Program!");
+    private JLabel regMessage = new JLabel("Register");
     private JTextField unInput = new JTextField(10);
     private JTextField nInput = new JTextField(10);
     private JTextField lInput = new JTextField(10);
@@ -51,7 +53,8 @@ class View extends JFrame implements Observer {
         
         userPanel.setLayout(null);
         
-        message.setBounds(10, 10, 250, 25);
+        logMessage.setBounds(10, 10, 250, 25);
+        logMessage.setFont(new Font("Grandview", Font.BOLD, 24));
         uName.setBounds(10, 40, 80, 25);
         uInput.setBounds(100, 40, 165, 25);
         pw.setBounds(10, 70, 80, 25);
@@ -59,7 +62,7 @@ class View extends JFrame implements Observer {
         loginButton.setBounds(10, 100, 80, 25);
         regButton.setBounds(100, 100, 100, 25);
         
-        userPanel.add(message);
+        userPanel.add(logMessage);
         userPanel.add(uName);
         userPanel.add(uInput);
         userPanel.add(pw);
@@ -74,14 +77,22 @@ class View extends JFrame implements Observer {
     
     public void registerStart() {
         regPanel.setLayout(null);
+        this.setSize(800, 600);
         
-        uRegName.setBounds(10, 40, 80, 25);
-        unInput.setBounds(100, 40, 100, 25);
-        fName.setBounds(10, 70, 100, 25);
-        nInput.setBounds(100, 70, 100, 25);
-        lName.setBounds(10, 100, 100, 25);
-        lInput.setBounds(100, 100, 100, 25);
+        uRegName.setBounds(250, 60, 80, 25);
+        unInput.setBounds(100, 60, 100, 25);
+        fName.setBounds(10, 90, 100, 25);
+        nInput.setBounds(100, 90, 100, 25);
+        lName.setBounds(10, 120, 100, 25);
+        lInput.setBounds(100, 120, 100, 25);
+        regMessage.setBounds(350, 7, 250, 30);
+        regMessage.setFont(new Font("Grandview", Font.BOLD, 24));
+        email.setBounds(10, 150, 100, 25);
+        eInput.setBounds(100, 150, 100, 25);
+        phNum.setBounds(10, 180, 100, 25);
+        phInput.setBounds(100, 180, 100, 25);
         
+        regPanel.add(regMessage);
         regPanel.add(uRegName);
         regPanel.add(unInput);
         regPanel.add(fName);
