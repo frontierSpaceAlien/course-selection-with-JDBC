@@ -5,6 +5,8 @@
  */
 package course_selection;
 
+import javax.swing.UIManager;
+
 /**
  *
  * @author Derek Lien
@@ -12,9 +14,17 @@ package course_selection;
 public class GUIMain {
 
     public static void main(String[] args) {
+
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        } catch (Exception ignored) {
+        }
+
         View view = new View();
         Model model = new Model();
         Controller controller = new Controller(view, model);
         model.addObserver(view);
+        
+        
     }
 }
