@@ -13,10 +13,10 @@ import java.util.Observable;
  */
 public class Model extends Observable{
     public Data data;
+    public Database db = new Database();
     
     public Model(){
-        System.out.println("Printing model constructor");
-        this.data = new Data();
+        db.dbsetup();
     }
     
     public void registerStart(){
@@ -24,4 +24,25 @@ public class Model extends Observable{
         this.setChanged();
         this.notifyObservers(this.data);
     }
+    
+    public void goBack(){
+        this.data.backFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void regUser(){
+        this.data.createUserFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void checkNewRegUser(String email){
+        this.db.checkNewRegUser(email);
+        
+        if (data.createUserFlag){
+            this.db.saveUser(email, email, email, email, email, email);
+        }
+    }
+    
 }

@@ -27,8 +27,15 @@ class Controller implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         switch(command){
-            case "Register":
+            case "Create New User":
                 this.model.registerStart();
+                break;
+            case "Back":
+                this.model.goBack();
+                break;      
+            case "Register":
+                String email = this.view.getEmail();
+                
                 break;
             default:
                 break;

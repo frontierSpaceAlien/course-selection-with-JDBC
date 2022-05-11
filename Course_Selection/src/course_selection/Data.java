@@ -10,6 +10,8 @@ package course_selection;
  * @author Derek Lien
  */
 public class Data {
-    boolean loginFlag = false;
+    boolean backFlag = false;
     boolean registerFlag = false;
+    boolean loginFlag = false;
+    boolean createUserFlag = false;
 }
