@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,8 +35,8 @@ public class Database {
             String tableName = "Users";
 
             if (!checkTableExisting(tableName)) {
-                statement.executeUpdate("CREATE TABLE " + tableName + " (userid VARCHAR(12), username VARCHAR(12), fname VARCHAR(12),"
-                        + " lname VARCHAR(12), password VARCHAR(12), phone VARCHAR(12), email VARCHAR(12))");
+                statement.executeUpdate("CREATE TABLE " + tableName + " (userid VARCHAR(30), username VARCHAR(30), fname VARCHAR(50),"
+                        + " lname VARCHAR(50), password VARCHAR(50), phone VARCHAR(50), email VARCHAR(100))");
             }
 
             statement.close();
@@ -62,7 +63,7 @@ public class Database {
                 rsDBMeta.close();
             }
         } catch (SQLException ex) {
-            System.out.println("WOW ERROR!");
+            System.out.println("TABLE ERROR!");
         }
         return flag;
     }
@@ -74,58 +75,71 @@ public class Database {
         int id = generator.nextInt(500000);
         try {
             statement = conn.createStatement();
-            statement.executeUpdate("INSERT INTO Users (USERID,USERNAME,FNAME,LNAME,PASSWORD,PHONE,EMAIL) VALUES"
-                    + " (" + id + "," + userName + "," + fName + "," + lName
-                    + "," + password + "," + email + "," + phNum + ")");
+            statement.executeUpdate("INSERT INTO Users "
+                    + "VALUES ('" + id + "', '" + userName + "' , '" + fName + "', '" + lName
+                    + "' , '" + password + "' , '" + phNum + "' , '" + email + "')");
         } catch (SQLException ex) {
-            System.out.println("Error");
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public Data checkLoginUser(String email) {
+    public Data checkLoginUser(String email, char[] password) {
         Data data = new Data();
         try {
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT userid, email FROM users"
-                    + "WHERE email = " + email);
+            ResultSet rs = statement.executeQuery("SELECT email, password FROM Users "
+                    + "WHERE email = '" + email + "'");
             if (rs.next()) {
                 String rsEmail = rs.getString("email");
+                String rsPassword = rs.getString("password");
+                String savePw = new String(password);
                 if (email.compareTo(rsEmail) == 0) {
-                    System.out.println("Logging in...");
-                    data.loginFlag = true;
+                    if (savePw.compareTo(rsPassword) == 0) {
+                        data.loginFlag = true;
+                        data.passwordFlag = true;
+                    } else {
+                        data.loginFlag = false;
+                        data.passwordFlag = false;
+                    }
+
                 } else {
                     data.loginFlag = false;
+                    data.passwordFlag = false;
                 }
             } else {
-                System.out.println("No valid user");
                 data.loginFlag = false;
+                data.passwordFlag = false;
             }
 
         } catch (SQLException ex) {
-            System.out.println("SQL Error!");
+            System.out.println("SQL check LOGIN ERROR!");
         }
 
         return data;
     }
 
-    public Data checkNewRegUser(String email) {
+    public Data checkNewRegUser(String userName, String fName, String lName, String password,
+            String phNum, String email) {
         Data data = new Data();
         try {
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT userid, email FROM users"
-                    + "WHERE email = " + email);
+            ResultSet rs = statement.executeQuery("SELECT userid, email FROM Users "
+                    + "WHERE email = '" + email + "'");
             if (rs.next()) {
                 String rsEmail = rs.getString("email");
                 if (email.compareTo(rsEmail) == 0) {
-                    System.out.println("User already exists!");
-                    data.createUserFlag = false;
+                    data.invalidFlag = false;
                 } else {
                     data.createUserFlag = true;
+                    data.invalidFlag = true;
                 }
+            } else {
+                data.createUserFlag = true;
+                data.invalidFlag = true;
             }
 
         } catch (SQLException ex) {
-            System.out.println("SQL Error!");
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return data;

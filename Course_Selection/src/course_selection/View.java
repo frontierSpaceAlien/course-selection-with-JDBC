@@ -5,6 +5,7 @@
  */
 package course_selection;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Observable;
@@ -28,16 +29,19 @@ class View extends JFrame implements Observer {
     private JLabel fName = new JLabel("First Name: ");
     private JLabel lName = new JLabel("Last Name: ");
     private JLabel email = new JLabel("Email: ");
+    private JLabel eLogLabel = new JLabel("Email: ");
     private JLabel phNum = new JLabel("Phone Number: ");
-    private JLabel regPw = new JLabel("Password: ");
-    private JLabel uName = new JLabel("Email: ");
     private JLabel pw = new JLabel("Password: ");
+    private JLabel pwrLabel = new JLabel("Password: ");
+    private JLabel eRegMsg = new JLabel("User already exists!");
     private JLabel logMessage = new JLabel("Course Selection");
     private JLabel regMessage = new JLabel("Register");
+    private JLabel logError = new JLabel("Invalid Login");
     private JTextField unInput = new JTextField(10);
     private JTextField nInput = new JTextField(10);
     private JTextField lInput = new JTextField(10);
-    private JTextField eInput = new JTextField(10);
+    private JTextField eLog = new JTextField(100);
+    private JTextField eInput = new JTextField(100);
     private JTextField phInput = new JTextField(10);
     private JTextField pwrInput = new JTextField(10);
     private JTextField uInput = new JTextField(10);
@@ -46,27 +50,26 @@ class View extends JFrame implements Observer {
     private JButton newUserButton = new JButton("Create New User");
     private JButton backButton = new JButton("Back");
     private JButton regButton = new JButton("Register");
-    private boolean started = false;
 
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(330, 180);
+        this.setSize(350, 200);
         this.setLocationRelativeTo(null);
 
         userPanel.setLayout(null);
 
         logMessage.setBounds(10, 10, 250, 25);
         logMessage.setFont(new Font("Grandview", Font.BOLD, 24));
-        uName.setBounds(10, 40, 80, 25);
-        uInput.setBounds(100, 40, 165, 25);
+        eLogLabel.setBounds(10, 40, 80, 25);
+        eLog.setBounds(100, 40, 165, 25);
         pw.setBounds(10, 70, 80, 25);
         pwInput.setBounds(100, 70, 165, 25);
         loginButton.setBounds(10, 100, 80, 25);
         newUserButton.setBounds(100, 100, 150, 25);
 
         userPanel.add(logMessage);
-        userPanel.add(uName);
-        userPanel.add(uInput);
+        userPanel.add(eLogLabel);
+        userPanel.add(eLog);
         userPanel.add(pw);
         userPanel.add(pwInput);
         userPanel.add(loginButton);
@@ -79,7 +82,7 @@ class View extends JFrame implements Observer {
     }
 
     public void back() {
-        this.setSize(330, 180);
+        this.setSize(350, 200);
         this.getContentPane().removeAll();
         this.setLocationRelativeTo(null);
         this.add(userPanel);
@@ -110,9 +113,9 @@ class View extends JFrame implements Observer {
         regPanel.add(lName);
         regPanel.add(lInput);
 
-        regPw.setBounds(250, 300, 100, 25);
+        pwrLabel.setBounds(250, 300, 100, 25);
         pwrInput.setBounds(250, 330, 300, 25);
-        regPanel.add(regPw);
+        regPanel.add(pwrLabel);
         regPanel.add(pwrInput);
 
         phNum.setBounds(250, 360, 100, 25);
@@ -124,16 +127,38 @@ class View extends JFrame implements Observer {
         eInput.setBounds(250, 450, 300, 25);
         regPanel.add(email);
         regPanel.add(eInput);
-        
+
         backButton.setBounds(250, 500, 100, 25);
         regPanel.add(backButton);
-        
+
         regButton.setBounds(450, 500, 100, 25);
         regPanel.add(regButton);
 
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(regPanel);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void displayErrorReg() {
+        eRegMsg.setBounds(350, 530, 100, 25);
+        eRegMsg.setForeground(Color.red);
+        regPanel.add(eRegMsg);
+
+        this.getContentPane().removeAll();
+        this.add(regPanel);
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void displayLogError() {
+        logError.setBounds(10, 130, 250, 25);
+        logError.setForeground(Color.red);
+        userPanel.add(logError);
+        
+        this.getContentPane().removeAll();
+        this.add(userPanel);
         this.revalidate();
         this.repaint();
     }
@@ -150,16 +175,76 @@ class View extends JFrame implements Observer {
         if (data.registerFlag) {
             this.registerStart();
             data.registerFlag = false;
-        }else if (data.backFlag){
+        } else if (data.backFlag) {
             this.back();
             data.backFlag = false;
-        }else if(data.createUserFlag){
+        } else if (data.createUserFlag) {
             this.back();
             data.createUserFlag = false;
+        } else if (!data.invalidFlag) {
+            this.displayErrorReg();
+        } else if (!data.passwordFlag || !data.loginFlag) {
+            this.displayLogError();
+        } else if(data.passwordFlag || data.loginFlag){
+            System.out.println("Logged in!!");
         }
     }
+
+    public String getUnInput() {
+        return this.unInput.getText();
+    }
+
+    public String getNInput() {
+        return this.nInput.getText();
+    }
+
+    public String getLInput() {
+        return this.lInput.getText();
+    }
+
+    public String getPwrInput() {
+        return this.pwrInput.getText();
+    }
     
-    public String getEmail(){
+    public char[] getPwInput(){
+        return this.pwInput.getPassword();
+    }
+
+    public String getPhInput() {
+        return this.phInput.getText();
+    }
+
+    public String getEmail() {
         return this.eInput.getText();
     }
+    
+    public String getELog(){
+        return this.eLog.getText();
+    }
+    
+    public void setUnInput(){
+        this.unInput.setText("");
+    }
+    
+    public void setNInput(){
+        this.nInput.setText("");
+    }
+    
+    public void setLInput(){
+        this.lInput.setText("");
+    }
+    
+    public void setPwrInput(){
+        this.pwrInput.setText("");
+    } 
+    
+    public void setPhInput(){
+        this.phInput.setText("");
+    }
+    
+    public void setEmail(){
+        this.eInput.setText("");
+    }
+    
+
 }

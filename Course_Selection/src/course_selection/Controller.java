@@ -26,16 +26,32 @@ class Controller implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-        switch(command){
+        switch (command) {
             case "Create New User":
+                this.view.setUnInput();
+                this.view.setNInput();
+                this.view.setLInput();
+                this.view.setPwrInput();
+                this.view.setPhInput();
+                this.view.setEmail();
                 this.model.registerStart();
                 break;
             case "Back":
                 this.model.goBack();
-                break;      
+                break;
             case "Register":
-                String email = this.view.getEmail();
-                
+                String username = this.view.getUnInput();
+                String fname = this.view.getNInput();
+                String lname = this.view.getLInput();
+                String regPw = this.view.getPwrInput();
+                String phone = this.view.getPhInput();
+                String regEmail = this.view.getEmail();
+                this.model.checkNewRegUser(username, fname, lname, regPw, phone, regEmail);
+                break;
+            case "Log in":
+                String email = this.view.getELog();
+                char[] pw = this.view.getPwInput();
+                this.model.checkLogin(email, pw);
                 break;
             default:
                 break;

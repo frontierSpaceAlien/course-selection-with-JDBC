@@ -14,4 +14,6 @@ public class Data {
     boolean registerFlag = false;
     boolean loginFlag = false;
     boolean createUserFlag = false;
+    boolean passwordFlag = false;
+    boolean invalidFlag = true;
 }

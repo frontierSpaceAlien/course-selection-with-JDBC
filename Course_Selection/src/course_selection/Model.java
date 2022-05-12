@@ -11,38 +11,50 @@ import java.util.Observable;
  *
  * @author Derek Lien
  */
-public class Model extends Observable{
+public class Model extends Observable {
+
     public Data data;
-    public Database db = new Database();
-    
-    public Model(){
+    public Database db;
+
+    public Model() {
+        this.db = new Database();
+        this.data = new Data();
         db.dbsetup();
     }
-    
-    public void registerStart(){
+
+    public void registerStart() {
         this.data.registerFlag = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void goBack(){
+
+    public void goBack() {
         this.data.backFlag = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void regUser(){
+
+    public void regUser() {
         this.data.createUserFlag = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void checkNewRegUser(String email){
-        this.db.checkNewRegUser(email);
-        
-        if (data.createUserFlag){
-            this.db.saveUser(email, email, email, email, email, email);
+
+    public void checkNewRegUser(String username, String fName, String lName, String password,
+            String phNum, String email) {
+        this.data = this.db.checkNewRegUser(username, fName, lName, password, phNum, email);
+
+        if (data.createUserFlag) {
+            this.db.saveUser(username, fName, lName, password, phNum, email);
         }
+        this.setChanged();
+        this.notifyObservers(this.data);
     }
     
+    public void checkLogin(String email, char[] password){
+        this.data = this.db.checkLoginUser(email, password);      
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+
 }
