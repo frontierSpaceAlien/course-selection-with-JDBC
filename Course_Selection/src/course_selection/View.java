@@ -8,11 +8,14 @@ package course_selection;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -25,6 +28,7 @@ class View extends JFrame implements Observer {
 
     private JPanel userPanel = new JPanel();
     private JPanel regPanel = new JPanel();
+    private JPanel studentPanel = new JPanel();
     private JLabel uRegName = new JLabel("Username: ");
     private JLabel fName = new JLabel("First Name: ");
     private JLabel lName = new JLabel("Last Name: ");
@@ -37,6 +41,10 @@ class View extends JFrame implements Observer {
     private JLabel logMessage = new JLabel("Course Selection");
     private JLabel regMessage = new JLabel("Register");
     private JLabel logError = new JLabel("Invalid Login");
+    private JLabel suName = new JLabel();
+    private JLabel sName = new JLabel();
+    private JLabel sumEFTS = new JLabel();
+    private JLabel courses = new JLabel("Courses: ");
     private JTextField unInput = new JTextField(10);
     private JTextField nInput = new JTextField(10);
     private JTextField lInput = new JTextField(10);
@@ -140,6 +148,23 @@ class View extends JFrame implements Observer {
         this.revalidate();
         this.repaint();
     }
+    
+    public void studentMenu(){
+        studentPanel.setLayout(null);
+        this.setSize(800, 600);
+        
+        suName.setBounds(50, 100, 250, 100);
+        sName.setBounds(50, 100, 100, 25);
+        studentPanel.add(suName);
+        studentPanel.add(sName);
+        
+        
+        this.setLocationRelativeTo(null);
+        this.getContentPane().removeAll();
+        this.add(studentPanel);
+        this.revalidate();
+        this.repaint();
+    }
 
     public void displayErrorReg() {
         eRegMsg.setBounds(350, 530, 100, 25);
@@ -172,6 +197,7 @@ class View extends JFrame implements Observer {
 
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
+        
         if (data.registerFlag) {
             this.registerStart();
             data.registerFlag = false;
@@ -179,6 +205,7 @@ class View extends JFrame implements Observer {
             this.back();
             data.backFlag = false;
         } else if (data.createUserFlag) {
+            JOptionPane.showMessageDialog(this, "Register Successful");
             this.back();
             data.createUserFlag = false;
         } else if (!data.invalidFlag) {
@@ -186,7 +213,9 @@ class View extends JFrame implements Observer {
         } else if (!data.passwordFlag || !data.loginFlag) {
             this.displayLogError();
         } else if(data.passwordFlag || data.loginFlag){
-            System.out.println("Logged in!!");
+            suName.setText("Username: "+data.username);
+            sName.setText("Name: "+data.name);
+            this.studentMenu();
         }
     }
 

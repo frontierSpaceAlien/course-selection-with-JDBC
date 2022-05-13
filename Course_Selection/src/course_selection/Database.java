@@ -69,7 +69,7 @@ public class Database {
     }
 
     public void saveUser(String userName, String fName, String lName, String password,
-            String email, String phNum) {
+            String phNum, String email) {
         Statement statement;
         Random generator = new Random();
         int id = generator.nextInt(500000);
@@ -140,6 +140,37 @@ public class Database {
 
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return data;
+    }
+
+    public Data getStudentInfo(String email) {
+        String username = "";
+        String name = "";
+        Student student = new Student(username, name);
+        Data data = new Data();
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery("SELECT username, fname||' '||lname AS name, email FROM Users "
+                    + "WHERE email = '" + email + "'");
+            if (rs.next()) {
+                String rsEmail = rs.getString("email");
+                if (email.compareTo(rsEmail) == 0) {
+                    username = rs.getString("username");
+                    name = rs.getString("name");
+                    student.setUsername(username);
+                    student.setName(name);
+                    data.username = student.getUsername();
+                    data.name = student.getName();
+                    data.loginFlag = true;
+                    data.passwordFlag = true;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+
         }
 
         return data;

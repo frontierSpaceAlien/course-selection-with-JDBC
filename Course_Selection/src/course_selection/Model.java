@@ -15,10 +15,12 @@ public class Model extends Observable {
 
     public Data data;
     public Database db;
+    public Student student;
 
     public Model() {
         this.db = new Database();
         this.data = new Data();
+        this.student = new Student("","");
         db.dbsetup();
     }
 
@@ -52,9 +54,11 @@ public class Model extends Observable {
     }
     
     public void checkLogin(String email, char[] password){
-        this.data = this.db.checkLoginUser(email, password);      
+        this.data = this.db.checkLoginUser(email, password);     
+        this.data = this.db.getStudentInfo(email);
         this.setChanged();
         this.notifyObservers(this.data);
     }
+
 
 }
