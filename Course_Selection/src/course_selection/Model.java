@@ -42,8 +42,8 @@ public class Model extends Observable {
         this.notifyObservers(this.data);
     }
 
-    public void checkNewRegUser(String username, String fName, String lName, String password,
-            String phNum, String email) {
+    public void checkNewRegUser(String username, String fName, String lName,
+            String password, String phNum, String email) {
         this.data = this.db.checkNewRegUser(username, fName, lName, password, phNum, email);
 
         if (data.createUserFlag) {
