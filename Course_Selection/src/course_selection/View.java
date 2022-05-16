@@ -5,14 +5,11 @@
  */
 package course_selection;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,7 +29,7 @@ class View extends JFrame implements Observer {
     
     private JPanel userPanel = new JPanel();
     private JPanel regPanel = new JPanel();
-    private JPanel studentPanel = new JPanel();
+    private JPanel mainMenu = new JPanel();
     private JLabel uRegName = new JLabel("Username: ");
     private JLabel fName = new JLabel("First Name: ");
     private JLabel lName = new JLabel("Last Name: ");
@@ -56,12 +53,16 @@ class View extends JFrame implements Observer {
     private JTextField eInput = new JTextField(100);
     private JTextField phInput = new JTextField(10);
     private JTextField pwrInput = new JTextField(10);
-    private JTextField uInput = new JTextField(10);
     private JPasswordField pwInput = new JPasswordField(10);
     private JButton loginButton = new JButton("Log in");
     private JButton newUserButton = new JButton("Create New User");
     private JButton backButton = new JButton("Back");
     private JButton regButton = new JButton("Register");
+    private JButton addCourse = new JButton("Add");
+    private JButton removeCourse = new JButton("Remove");
+    private JButton saveButton = new JButton("Save");
+    private JButton backToLogin = new JButton("Back");
+    private JButton exitApp = new JButton("Exit");
     private final String[] cNames = new String[]{"Course Code", "Semester Date", "EFTS"};
     private Object[][] data = {{"COMP603", "Semester 1 and 2", "0.5",}};
     private DefaultTableModel model = new DefaultTableModel(data, cNames) {
@@ -165,27 +166,38 @@ class View extends JFrame implements Observer {
     }
     
     public void studentMenu() {
-        studentPanel.setLayout(null);
-        this.setSize(800, 400);
+        mainMenu.setLayout(null);
+        this.setSize(480, 600);
         suName.setFont(new Font("Arial", Font.PLAIN, 14));
         sName.setFont(new Font("Arial", Font.PLAIN, 14));
         courses.setFont(new Font("Arial", Font.PLAIN, 14));
         sumEFTS.setFont(new Font("Arial", Font.PLAIN, 14));
         
-        suName.setBounds(50, 30, 250, 100);
-        sName.setBounds(50, 90, 250, 100);
-        sumEFTS.setBounds(50, 150, 250, 100);
-        courses.setBounds(50, 210, 250, 100);
-        sp.setBounds(300, 70, 400, 200);
-        studentPanel.add(suName);
-        studentPanel.add(sName);
-        studentPanel.add(courses);
-        studentPanel.add(sumEFTS);
-        studentPanel.add(sp);
-
+        suName.setBounds(30, 20, 250, 100);
+        sName.setBounds(30, 60, 250, 100);
+        sumEFTS.setBounds(30, 100, 250, 100);
+        courses.setBounds(30, 150, 250, 100);
+        sp.setBounds(30, 220, 400, 200);
+        addCourse.setBounds(30, 430, 100, 25);
+        removeCourse.setBounds(140, 430, 100, 25);
+        saveButton.setBounds(250, 430, 100, 25);
+        backToLogin.setBounds(30, 510, 100, 25);
+        exitApp.setBounds(330, 510, 100, 25);
+        
+        mainMenu.add(suName);
+        mainMenu.add(sName);
+        mainMenu.add(sumEFTS);
+        mainMenu.add(courses);
+        mainMenu.add(sp);
+        mainMenu.add(addCourse);
+        mainMenu.add(removeCourse);
+        mainMenu.add(saveButton);
+        mainMenu.add(backToLogin);
+        mainMenu.add(exitApp);
+        
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
-        this.add(studentPanel);
+        this.add(mainMenu);
         this.revalidate();
         this.repaint();
     }
