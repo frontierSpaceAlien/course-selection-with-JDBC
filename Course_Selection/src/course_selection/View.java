@@ -10,7 +10,11 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,10 +30,12 @@ import javax.swing.table.DefaultTableModel;
  * @author Derek Lien
  */
 class View extends JFrame implements Observer {
-    
+
     private JPanel userPanel = new JPanel();
     private JPanel regPanel = new JPanel();
     private JPanel mainMenu = new JPanel();
+    private JPanel addPanel = new JPanel();
+    private JFrame addFrame = new JFrame();
     private JLabel uRegName = new JLabel("Username: ");
     private JLabel fName = new JLabel("First Name: ");
     private JLabel lName = new JLabel("Last Name: ");
@@ -58,15 +64,21 @@ class View extends JFrame implements Observer {
     private JButton newUserButton = new JButton("Create New User");
     private JButton backButton = new JButton("Back");
     private JButton regButton = new JButton("Register");
-    private JButton addCourse = new JButton("Add");
+    private JButton addButton = new JButton("Add");
     private JButton removeCourse = new JButton("Remove");
     private JButton saveButton = new JButton("Save");
     private JButton backToLogin = new JButton("Back");
     private JButton exitApp = new JButton("Exit");
-    private final String[] cNames = new String[]{"Course Code", "Semester Date", "EFTS"};
-    private Object[][] data = {{"COMP603", "Semester 1 and 2", "0.5",}};
+    private JDialog modal = new JDialog(addFrame, "", true);
+    private final String[] cTest = new String[]{"dsees", "eeee"};
+    private JComboBox courseList = new JComboBox(cTest);
+    private JCheckBox sem1 = new JCheckBox("Semester 1");
+    private JCheckBox sem2 = new JCheckBox("Semester 2");
+    private ButtonGroup group = new ButtonGroup();
+    private final String[] cNames = new String[]{"Course Code", "Stream", "EFTS"};
+    private Object[][] data = {{"COMP603", "11", "0.5",}};
     private DefaultTableModel model = new DefaultTableModel(data, cNames) {
-        
+
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -74,14 +86,14 @@ class View extends JFrame implements Observer {
     };
     private JTable cTable = new JTable(model);
     private JScrollPane sp = new JScrollPane(cTable);
-    
+
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(350, 200);
         this.setLocationRelativeTo(null);
-        
+
         userPanel.setLayout(null);
-        
+
         logMessage.setBounds(10, 10, 250, 25);
         logMessage.setFont(new Font("Grandview", Font.BOLD, 24));
         eLogLabel.setBounds(10, 40, 80, 25);
@@ -90,7 +102,7 @@ class View extends JFrame implements Observer {
         pwInput.setBounds(100, 70, 165, 25);
         loginButton.setBounds(10, 100, 80, 25);
         newUserButton.setBounds(100, 100, 150, 25);
-        
+
         userPanel.add(logMessage);
         userPanel.add(eLogLabel);
         userPanel.add(eLog);
@@ -98,13 +110,13 @@ class View extends JFrame implements Observer {
         userPanel.add(pwInput);
         userPanel.add(loginButton);
         userPanel.add(newUserButton);
-        
+
         this.add(userPanel);
         this.setVisible(true);
         this.setResizable(false);
         this.setTitle("Course Selection");
     }
-    
+
     public void back() {
         this.setSize(350, 200);
         this.getContentPane().removeAll();
@@ -113,58 +125,58 @@ class View extends JFrame implements Observer {
         this.revalidate();
         this.repaint();
     }
-    
+
     public void registerStart() {
         regPanel.setLayout(null);
         this.setSize(800, 600);
-        
+
         regMessage.setBounds(300, 20, 250, 100);
         regMessage.setFont(new Font("Grandview", Font.BOLD, 48));
         regPanel.add(regMessage);
-        
+
         uRegName.setBounds(250, 120, 100, 25);
         unInput.setBounds(250, 150, 300, 25);
         regPanel.add(uRegName);
         regPanel.add(unInput);
-        
+
         fName.setBounds(250, 180, 100, 25);
         nInput.setBounds(250, 210, 300, 25);
         regPanel.add(fName);
         regPanel.add(nInput);
-        
+
         lName.setBounds(250, 240, 100, 25);
         lInput.setBounds(250, 270, 300, 25);
         regPanel.add(lName);
         regPanel.add(lInput);
-        
+
         pwrLabel.setBounds(250, 300, 100, 25);
         pwrInput.setBounds(250, 330, 300, 25);
         regPanel.add(pwrLabel);
         regPanel.add(pwrInput);
-        
+
         phNum.setBounds(250, 360, 100, 25);
         phInput.setBounds(250, 390, 300, 25);
         regPanel.add(phNum);
         regPanel.add(phInput);
-        
+
         email.setBounds(250, 420, 100, 25);
         eInput.setBounds(250, 450, 300, 25);
         regPanel.add(email);
         regPanel.add(eInput);
-        
+
         backButton.setBounds(250, 500, 100, 25);
         regPanel.add(backButton);
-        
+
         regButton.setBounds(450, 500, 100, 25);
         regPanel.add(regButton);
-        
+
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(regPanel);
         this.revalidate();
         this.repaint();
     }
-    
+
     public void studentMenu() {
         mainMenu.setLayout(null);
         this.setSize(480, 600);
@@ -172,71 +184,98 @@ class View extends JFrame implements Observer {
         sName.setFont(new Font("Arial", Font.PLAIN, 14));
         courses.setFont(new Font("Arial", Font.PLAIN, 14));
         sumEFTS.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
         suName.setBounds(30, 20, 250, 100);
         sName.setBounds(30, 60, 250, 100);
         sumEFTS.setBounds(30, 100, 250, 100);
         courses.setBounds(30, 150, 250, 100);
         sp.setBounds(30, 220, 400, 200);
-        addCourse.setBounds(30, 430, 100, 25);
+        addButton.setBounds(30, 430, 100, 25);
         removeCourse.setBounds(140, 430, 100, 25);
         saveButton.setBounds(250, 430, 100, 25);
         backToLogin.setBounds(30, 510, 100, 25);
         exitApp.setBounds(330, 510, 100, 25);
-        
+
         mainMenu.add(suName);
         mainMenu.add(sName);
         mainMenu.add(sumEFTS);
         mainMenu.add(courses);
         mainMenu.add(sp);
-        mainMenu.add(addCourse);
+        mainMenu.add(addButton);
         mainMenu.add(removeCourse);
         mainMenu.add(saveButton);
         mainMenu.add(backToLogin);
         mainMenu.add(exitApp);
-        
+
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(mainMenu);
         this.revalidate();
         this.repaint();
     }
-    
+
     public void displayErrorReg() {
         eRegMsg.setBounds(350, 530, 100, 25);
         eRegMsg.setForeground(Color.red);
         regPanel.add(eRegMsg);
-        
+
         this.getContentPane().removeAll();
         this.add(regPanel);
         this.revalidate();
         this.repaint();
     }
-    
+
     public void displayLogError() {
         logError.setBounds(10, 130, 250, 25);
         logError.setForeground(Color.red);
         userPanel.add(logError);
-        
+
         this.getContentPane().removeAll();
         this.add(userPanel);
         this.revalidate();
         this.repaint();
     }
-    
+
+    public void displayCourseSelect() {
+        this.modal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.modal.setSize(800, 400);
+        this.modal.setLocationRelativeTo(this);
+
+        addPanel.setLayout(null);
+        courseList.setBounds(50, 50, 400, 25);
+        sem1.setBounds(500, 50, 50, 25);
+        sem2.setBounds(550, 50, 50, 25);
+        addPanel.add(courseList);
+        group.add(sem1);
+        group.add(sem2);
+        addPanel.add(sem1);
+        addPanel.add(sem2);
+        modal.add(addPanel);
+
+        this.modal.setVisible(true);
+
+    }
+
     public void addActionListener(ActionListener listener) {
         this.loginButton.addActionListener(listener);
         this.newUserButton.addActionListener(listener);
         this.backButton.addActionListener(listener);
         this.regButton.addActionListener(listener);
+        this.addButton.addActionListener(listener);
+        this.sem1.addActionListener(listener);
+        this.sem2.addActionListener(listener);
+        this.courseList.addActionListener(listener);
     }
-    
+
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
-        
+
         if (data.registerFlag) {
             this.registerStart();
             data.registerFlag = false;
+        } else if (data.addGUIFlag) {
+            this.displayCourseSelect();
+            data.addGUIFlag = false;
         } else if (data.backFlag) {
             this.back();
             data.backFlag = false;
@@ -248,67 +287,75 @@ class View extends JFrame implements Observer {
             this.displayErrorReg();
         } else if (!data.passwordFlag || !data.loginFlag) {
             this.displayLogError();
-        } else if (data.passwordFlag || data.loginFlag) {
+        } else if (data.passwordFlag && data.loginFlag) {
             suName.setText("Username: " + data.username);
             sName.setText("Name: " + data.name);
             this.studentMenu();
         }
     }
-    
+
     public String getUnInput() {
         return this.unInput.getText();
     }
-    
+
     public String getNInput() {
         return this.nInput.getText();
     }
-    
+
     public String getLInput() {
         return this.lInput.getText();
     }
-    
+
     public String getPwrInput() {
         return this.pwrInput.getText();
     }
-    
+
     public char[] getPwInput() {
         return this.pwInput.getPassword();
     }
-    
+
     public String getPhInput() {
         return this.phInput.getText();
     }
-    
+
     public String getEmail() {
         return this.eInput.getText();
     }
-    
+
     public String getELog() {
         return this.eLog.getText();
     }
+
+    public JCheckBox getSem1() {
+        return sem1;
+    }
     
+    public JCheckBox getSem2(){
+        return sem2;
+    }
+
     public void setUnInput() {
         this.unInput.setText("");
     }
-    
+
     public void setNInput() {
         this.nInput.setText("");
     }
-    
+
     public void setLInput() {
         this.lInput.setText("");
     }
-    
+
     public void setPwrInput() {
         this.pwrInput.setText("");
     }
-    
+
     public void setPhInput() {
         this.phInput.setText("");
     }
-    
+
     public void setEmail() {
         this.eInput.setText("");
     }
-    
+
 }

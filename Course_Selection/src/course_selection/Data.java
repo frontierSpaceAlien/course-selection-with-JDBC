@@ -17,6 +17,8 @@ public class Data {
     boolean passwordFlag = false;
     boolean invalidFlag = true;
     boolean studentFlag = false;
+    boolean addGUIFlag = false;
+    boolean populateCourseBoxFlag = false;
     String username = "";
     String name = "";
 }

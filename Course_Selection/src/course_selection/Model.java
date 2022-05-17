@@ -20,7 +20,7 @@ public class Model extends Observable {
     public Model() {
         this.db = new Database();
         this.data = new Data();
-        this.student = new Student("","");
+        this.student = new Student("", "");
         db.dbsetup();
     }
 
@@ -52,13 +52,23 @@ public class Model extends Observable {
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void checkLogin(String email, char[] password){
-        this.data = this.db.checkLoginUser(email, password);     
+
+    public void checkLogin(String email, char[] password) {
+        this.data = this.db.checkLoginUser(email, password);
         this.data = this.db.getStudentInfo(email);
         this.setChanged();
         this.notifyObservers(this.data);
     }
 
+    public void addCourse() {
+        this.data.addGUIFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+
+    public void changeCourseBox(int semester) {
+        this.db.getCourseInfoSem(semester);
+
+    }
 
 }

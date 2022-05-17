@@ -53,8 +53,18 @@ class Controller implements ActionListener {
                 char[] pw = this.view.getPwInput();
                 this.model.checkLogin(email, pw);
                 break;
+            case "Add":
+                this.model.addCourse();
+                break;
+            case "1":
+                break;
+            case "2":
+                break;
             default:
                 break;
         }
+        
+        
     }
+    
 }
