@@ -5,6 +5,8 @@
  */
 package course_selection;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Derek Lien
@@ -19,6 +21,10 @@ public class Data {
     boolean studentFlag = false;
     boolean addGUIFlag = false;
     boolean populateCourseBoxFlag = false;
+    boolean populateJListFlag = false;
+    boolean removeJListFlag = false;
+    ArrayList<String> course = new ArrayList<String>();
+    ArrayList<String> stream = new ArrayList<String>();
     String username = "";
     String name = "";
 }

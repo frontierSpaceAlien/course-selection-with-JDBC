@@ -8,15 +8,19 @@ package course_selection;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -65,15 +69,19 @@ class View extends JFrame implements Observer {
     private JButton backButton = new JButton("Back");
     private JButton regButton = new JButton("Register");
     private JButton addButton = new JButton("Add");
-    private JButton removeCourse = new JButton("Remove");
+    private JButton removeButton = new JButton("Remove");
     private JButton saveButton = new JButton("Save");
     private JButton backToLogin = new JButton("Back");
     private JButton exitApp = new JButton("Exit");
-    private JDialog modal = new JDialog(addFrame, "", true);
-    private final String[] cTest = new String[]{"dsees", "eeee"};
-    private JComboBox courseList = new JComboBox(cTest);
+    private JButton addCourse = new JButton("Add Course");
+    private JButton removeCourse = new JButton("Remove Course");
+    private JDialog modal = new JDialog(addFrame, "Course Selection", true);
+    private JComboBox courseList = new JComboBox();
     private JCheckBox sem1 = new JCheckBox("Semester 1");
     private JCheckBox sem2 = new JCheckBox("Semester 2");
+    private JList courseAddList = new JList();
+    private DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
+    private DefaultListModel<String> jListModel = new DefaultListModel<>();
     private ButtonGroup group = new ButtonGroup();
     private final String[] cNames = new String[]{"Course Code", "Stream", "EFTS"};
     private Object[][] data = {{"COMP603", "11", "0.5",}};
@@ -86,6 +94,7 @@ class View extends JFrame implements Observer {
     };
     private JTable cTable = new JTable(model);
     private JScrollPane sp = new JScrollPane(cTable);
+    private static final int MAXPAPERS = 5;
 
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -191,7 +200,7 @@ class View extends JFrame implements Observer {
         courses.setBounds(30, 150, 250, 100);
         sp.setBounds(30, 220, 400, 200);
         addButton.setBounds(30, 430, 100, 25);
-        removeCourse.setBounds(140, 430, 100, 25);
+        removeButton.setBounds(140, 430, 100, 25);
         saveButton.setBounds(250, 430, 100, 25);
         backToLogin.setBounds(30, 510, 100, 25);
         exitApp.setBounds(330, 510, 100, 25);
@@ -202,7 +211,7 @@ class View extends JFrame implements Observer {
         mainMenu.add(courses);
         mainMenu.add(sp);
         mainMenu.add(addButton);
-        mainMenu.add(removeCourse);
+        mainMenu.add(removeButton);
         mainMenu.add(saveButton);
         mainMenu.add(backToLogin);
         mainMenu.add(exitApp);
@@ -243,15 +252,22 @@ class View extends JFrame implements Observer {
 
         addPanel.setLayout(null);
         courseList.setBounds(50, 50, 400, 25);
-        sem1.setBounds(500, 50, 50, 25);
-        sem2.setBounds(550, 50, 50, 25);
+        sem1.setBounds(500, 50, 100, 25);
+        sem2.setBounds(600, 50, 100, 25);
+        courseAddList.setBounds(50, 150, 600, 150);
+        addCourse.setBounds(50, 100, 100, 25);
+        removeCourse.setBounds(170, 100, 130, 25);
         addPanel.add(courseList);
         group.add(sem1);
         group.add(sem2);
         addPanel.add(sem1);
         addPanel.add(sem2);
+        addPanel.add(courseAddList);
+        addPanel.add(addCourse);
+        addPanel.add(removeCourse);
         modal.add(addPanel);
 
+        this.modal.setResizable(false);
         this.modal.setVisible(true);
 
     }
@@ -264,11 +280,17 @@ class View extends JFrame implements Observer {
         this.addButton.addActionListener(listener);
         this.sem1.addActionListener(listener);
         this.sem2.addActionListener(listener);
-        this.courseList.addActionListener(listener);
+        this.addCourse.addActionListener(listener);
+        this.removeCourse.addActionListener(listener);
     }
 
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
+        String courseString = "";
+        String courseCode = "";
+        String courseStream = "";
+        String courseComboBoxString = "";
+        String courseComboBoxStream = "";
 
         if (data.registerFlag) {
             this.registerStart();
@@ -276,6 +298,75 @@ class View extends JFrame implements Observer {
         } else if (data.addGUIFlag) {
             this.displayCourseSelect();
             data.addGUIFlag = false;
+        } else if (data.populateJListFlag) {
+
+            if (jListModel.getSize() < MAXPAPERS) {
+                courseString = String.valueOf(courseList.getSelectedItem());
+                String[] splitCourseString = courseString.split("/");
+                courseComboBoxString = splitCourseString[0];
+                courseComboBoxStream = splitCourseString[1];
+                String upper = "17";
+                String lower = "10";
+                String upper2 = "54";
+                String lower2 = "50";
+
+                for (int i = 0; i < jListModel.size(); i++) {
+                    String[] split = jListModel.get(i).split("/");
+                    courseCode = split[0];
+                    courseStream = split[1];
+                }
+
+                if (jListModel.isEmpty()) {
+                    jListModel.addElement(courseString);
+                    courseAddList.setModel(jListModel);
+                } else {
+                    if (courseStream.compareTo(lower) >= 0
+                            && courseStream.compareTo(upper) <= 0
+                            && courseComboBoxStream.compareTo(lower) >= 0
+                            && courseComboBoxStream.compareTo(upper) <= 0) {
+                        if (courseCode.equals(courseComboBoxString)) {
+                            JOptionPane.showMessageDialog(this.modal, "You already have " + courseCode + " added!");
+                        } else {
+                            jListModel.addElement(courseString);
+                            courseAddList.setModel(jListModel);
+                        }
+                    } else if (courseStream.compareTo(lower2) >= 0
+                            && courseStream.compareTo(upper2) <= 0
+                            && courseComboBoxStream.compareTo(lower2) >= 0
+                            && courseComboBoxStream.compareTo(upper2) <= 0) {
+                        if (courseCode.equals(courseComboBoxString)) {
+                            JOptionPane.showMessageDialog(this.modal, "You already have " + courseCode + " added!");
+                        } else {
+                            jListModel.addElement(courseString);
+                            courseAddList.setModel(jListModel);
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(this.modal, "You cannot take semester 1 and semester 2 papers in the same semester!");
+                    }
+
+                }
+
+            } else if (jListModel.getSize() >= MAXPAPERS) {
+                JOptionPane.showMessageDialog(this.modal, "You cannot take more than 5 papers!");
+            }
+
+            data.populateJListFlag = false;
+
+        } else if (data.removeJListFlag) {
+            int index = courseAddList.getSelectedIndex();
+
+            if (index != -1) {
+                jListModel.remove(index);
+            }
+
+            data.removeJListFlag = false;
+        } else if (data.populateCourseBoxFlag) {
+            comboBoxModel.removeAllElements();
+            for (int i = 0; i < data.course.size(); i++) {
+                comboBoxModel.addElement(data.stream.get(i) + "/" + data.course.get(i));
+            }
+            courseList.setModel(comboBoxModel);
+
         } else if (data.backFlag) {
             this.back();
             data.backFlag = false;
@@ -329,8 +420,8 @@ class View extends JFrame implements Observer {
     public JCheckBox getSem1() {
         return sem1;
     }
-    
-    public JCheckBox getSem2(){
+
+    public JCheckBox getSem2() {
         return sem2;
     }
 

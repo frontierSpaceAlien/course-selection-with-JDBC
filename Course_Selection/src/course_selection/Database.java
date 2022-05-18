@@ -295,29 +295,34 @@ public class Database {
         return data;
     }
 
-    public Data getCourseInfoSem(int semester) {
+    public Data getCourseInfoSem(String semester) {
         Data data = new Data();
-        ArrayList<String> course = new ArrayList<String>();
-        ArrayList<String> stream = new ArrayList<String>();
 
         try {
-            if (semester == 0) {
+            if (semester.equals("Semester 1")) {
                 Statement statement = conn.createStatement();
                 ResultSet rs = statement.executeQuery("SELECT s.STREAMNUM, c.COURSEID from stream s,  courses c "
                         + "WHERE s.COURSEID = c.COURSEID "
                         + "AND s.STREAMNUM >= 10 AND s.STREAMNUM <= 17");
-                while(rs.next()){
-                    course.add(rs.getString(1));
-                    stream.add(rs.getString(2));
+                while (rs.next()) {
+                    data.course.add(rs.getString(1));
+                    data.stream.add(rs.getString(2));
                 }
-                
-            } else if (semester == 1) {
+                data.populateCourseBoxFlag = true;
+
+            } else if (semester.equals("Semester 2")) {
                 Statement statement = conn.createStatement();
                 ResultSet rs = statement.executeQuery("SELECT s.STREAMNUM, c.COURSEID from stream s,  courses c "
                         + "WHERE s.COURSEID = c.COURSEID "
                         + "AND s.STREAMNUM >= 50 AND s.STREAMNUM <= 54");
+                while (rs.next()) {
+                    data.course.add(rs.getString(1));
+                    data.stream.add(rs.getString(2));
+                }
+                data.populateCourseBoxFlag = true;
 
             }
+            data.populateCourseBoxFlag = true;
 
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);

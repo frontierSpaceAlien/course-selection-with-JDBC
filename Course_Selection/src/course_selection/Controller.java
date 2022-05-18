@@ -56,9 +56,17 @@ class Controller implements ActionListener {
             case "Add":
                 this.model.addCourse();
                 break;
-            case "1":
+            case "Semester 1":
+                this.model.changeCourseBox("Semester 1");
                 break;
-            case "2":
+            case "Semester 2":
+                this.model.changeCourseBox("Semester 2");
+                break;
+            case "Add Course":
+                this.model.addCourseToList();
+                break;
+            case "Remove Course":
+                this.model.removeCourseFromList();
                 break;
             default:
                 break;

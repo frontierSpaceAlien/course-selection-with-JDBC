@@ -66,9 +66,22 @@ public class Model extends Observable {
         this.notifyObservers(this.data);
     }
 
-    public void changeCourseBox(int semester) {
-        this.db.getCourseInfoSem(semester);
-
+    public void changeCourseBox(String semester) {
+        this.data = this.db.getCourseInfoSem(semester);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void addCourseToList(){
+        this.data.populateJListFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void removeCourseFromList(){
+        this.data.removeJListFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
     }
 
 }
