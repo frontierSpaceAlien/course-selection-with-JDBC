@@ -30,4 +30,5 @@ public class Data {
     ArrayList<String> stream = new ArrayList<String>();
     String username = "";
     String name = "";
+    String id = "";
 }

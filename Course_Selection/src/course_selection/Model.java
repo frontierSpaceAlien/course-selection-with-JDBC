@@ -20,7 +20,7 @@ public class Model extends Observable {
     public Model() {
         this.db = new Database();
         this.data = new Data();
-        this.student = new Student("", "");
+        this.student = new Student("", "", "");
         db.dbsetup();
     }
 
@@ -71,32 +71,32 @@ public class Model extends Observable {
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void addCourseToList(){
+
+    public void addCourseToList() {
         this.data.populateJListFlag = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void removeCourseFromList(){
+
+    public void removeCourseFromList() {
         this.data.removeJListFlag = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void cancelCourseMenu(){
+
+    public void cancelCourseMenu() {
         this.data.cancelCourseMenu = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void confirmCourses(){
+
+    public void confirmCourses() {
         this.data.confirmCourse = true;
         this.setChanged();
         this.notifyObservers(this.data);
     }
-    
-    public void removeFromTable(){
+
+    public void removeFromTable() {
         this.data.removeFromTable = true;
         this.setChanged();
         this.notifyObservers(this.data);

@@ -77,6 +77,8 @@ class Controller implements ActionListener {
             case "Remove":
                 this.model.removeFromTable();
                 break;
+            case "Save":
+                break;
             default:
                 break;
         }

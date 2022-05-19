@@ -34,7 +34,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Derek Lien
  */
 class View extends JFrame implements Observer {
-
+    
     private JPanel userPanel = new JPanel();
     private JPanel regPanel = new JPanel();
     private JPanel mainMenu = new JPanel();
@@ -54,8 +54,9 @@ class View extends JFrame implements Observer {
     private JLabel logError = new JLabel("Invalid Login");
     private JLabel suName = new JLabel();
     private JLabel sName = new JLabel();
-    private JLabel sumEFTS = new JLabel("Total EFTS: ");
+    private JLabel uID = new JLabel();
     private JLabel courses = new JLabel("Courses: ");
+    private JLabel selectCourseLabel = new JLabel("Select Courses: ");
     private JTextField unInput = new JTextField(10);
     private JTextField nInput = new JTextField(10);
     private JTextField lInput = new JTextField(10);
@@ -86,7 +87,7 @@ class View extends JFrame implements Observer {
     private DefaultListModel<String> jListModel = new DefaultListModel<>();
     private ButtonGroup group = new ButtonGroup();
     private DefaultTableModel model = new DefaultTableModel() {
-
+        
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
@@ -95,14 +96,14 @@ class View extends JFrame implements Observer {
     private JTable cTable = new JTable(model);
     private JScrollPane sp = new JScrollPane(cTable);
     private static final int MAXPAPERS = 4;
-
+    
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(350, 200);
         this.setLocationRelativeTo(null);
-
+        
         userPanel.setLayout(null);
-
+        
         logMessage.setBounds(10, 10, 250, 25);
         logMessage.setFont(new Font("Grandview", Font.BOLD, 24));
         eLogLabel.setBounds(10, 40, 80, 25);
@@ -111,7 +112,7 @@ class View extends JFrame implements Observer {
         pwInput.setBounds(100, 70, 165, 25);
         loginButton.setBounds(10, 100, 80, 25);
         newUserButton.setBounds(100, 100, 150, 25);
-
+        
         userPanel.add(logMessage);
         userPanel.add(eLogLabel);
         userPanel.add(eLog);
@@ -119,13 +120,13 @@ class View extends JFrame implements Observer {
         userPanel.add(pwInput);
         userPanel.add(loginButton);
         userPanel.add(newUserButton);
-
+        
         this.add(userPanel);
         this.setVisible(true);
         this.setResizable(false);
         this.setTitle("Course Selection");
     }
-
+    
     public void back() {
         this.setSize(350, 200);
         this.getContentPane().removeAll();
@@ -134,69 +135,69 @@ class View extends JFrame implements Observer {
         this.revalidate();
         this.repaint();
     }
-
+    
     public void registerStart() {
         regPanel.setLayout(null);
         this.setSize(800, 600);
-
+        
         regMessage.setBounds(300, 20, 250, 100);
         regMessage.setFont(new Font("Grandview", Font.BOLD, 48));
         regPanel.add(regMessage);
-
+        
         uRegName.setBounds(250, 120, 100, 25);
         unInput.setBounds(250, 150, 300, 25);
         regPanel.add(uRegName);
         regPanel.add(unInput);
-
+        
         fName.setBounds(250, 180, 100, 25);
         nInput.setBounds(250, 210, 300, 25);
         regPanel.add(fName);
         regPanel.add(nInput);
-
+        
         lName.setBounds(250, 240, 100, 25);
         lInput.setBounds(250, 270, 300, 25);
         regPanel.add(lName);
         regPanel.add(lInput);
-
+        
         pwrLabel.setBounds(250, 300, 100, 25);
         pwrInput.setBounds(250, 330, 300, 25);
         regPanel.add(pwrLabel);
         regPanel.add(pwrInput);
-
+        
         phNum.setBounds(250, 360, 100, 25);
         phInput.setBounds(250, 390, 300, 25);
         regPanel.add(phNum);
         regPanel.add(phInput);
-
+        
         email.setBounds(250, 420, 100, 25);
         eInput.setBounds(250, 450, 300, 25);
         regPanel.add(email);
         regPanel.add(eInput);
-
+        
         backButton.setBounds(250, 500, 100, 25);
         regPanel.add(backButton);
-
+        
         regButton.setBounds(450, 500, 100, 25);
         regPanel.add(regButton);
-
+        
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(regPanel);
         this.revalidate();
         this.repaint();
     }
-
+    
     public void studentMenu() {
         mainMenu.setLayout(null);
         this.setSize(480, 600);
         suName.setFont(new Font("Arial", Font.PLAIN, 14));
         sName.setFont(new Font("Arial", Font.PLAIN, 14));
         courses.setFont(new Font("Arial", Font.PLAIN, 14));
-        sumEFTS.setFont(new Font("Arial", Font.PLAIN, 14));
-
-        suName.setBounds(30, 20, 250, 100);
-        sName.setBounds(30, 60, 250, 100);
-        sumEFTS.setBounds(30, 100, 250, 100);
+        uID.setFont(new Font("Arial", Font.PLAIN, 14));
+        
+        uID.setBounds(30, 20, 250, 100);
+        suName.setBounds(30, 60, 250, 100);
+        sName.setBounds(30, 100, 250, 100);
         courses.setBounds(30, 150, 250, 100);
         sp.setBounds(30, 220, 400, 200);
         addButton.setBounds(30, 430, 100, 25);
@@ -207,10 +208,11 @@ class View extends JFrame implements Observer {
         model.addColumn("Course Code");
         model.addColumn("Stream");
         cTable.getTableHeader().setReorderingAllowed(false);
-
+        cTable.setFillsViewportHeight(true);
+        
         mainMenu.add(suName);
         mainMenu.add(sName);
-        mainMenu.add(sumEFTS);
+        mainMenu.add(uID);
         mainMenu.add(courses);
         mainMenu.add(sp);
         mainMenu.add(addButton);
@@ -218,42 +220,43 @@ class View extends JFrame implements Observer {
         mainMenu.add(saveButton);
         mainMenu.add(backToLogin);
         mainMenu.add(exitApp);
-
+        
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(mainMenu);
         this.revalidate();
         this.repaint();
     }
-
+    
     public void displayErrorReg() {
         eRegMsg.setBounds(350, 530, 100, 25);
         eRegMsg.setForeground(Color.red);
         regPanel.add(eRegMsg);
-
+        
         this.getContentPane().removeAll();
         this.add(regPanel);
         this.revalidate();
         this.repaint();
     }
-
+    
     public void displayLogError() {
         logError.setBounds(10, 130, 250, 25);
         logError.setForeground(Color.red);
         userPanel.add(logError);
-
+        
         this.getContentPane().removeAll();
         this.add(userPanel);
         this.revalidate();
         this.repaint();
     }
-
+    
     public void displayCourseSelect() {
         this.modal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.modal.setSize(750, 400);
         this.modal.setLocationRelativeTo(this);
-
+        
         addPanel.setLayout(null);
+        selectCourseLabel.setBounds(50, 30, 100, 25);
         courseList.setBounds(50, 50, 400, 25);
         sem1.setBounds(500, 50, 100, 25);
         sem2.setBounds(600, 50, 100, 25);
@@ -262,6 +265,7 @@ class View extends JFrame implements Observer {
         removeCourse.setBounds(170, 100, 130, 25);
         cancelBtn.setBounds(50, 315, 100, 25);
         confirmBtn.setBounds(580, 315, 100, 25);
+        addPanel.add(selectCourseLabel);
         addPanel.add(courseList);
         group.add(sem1);
         group.add(sem2);
@@ -273,12 +277,12 @@ class View extends JFrame implements Observer {
         addPanel.add(cancelBtn);
         addPanel.add(confirmBtn);
         modal.add(addPanel);
-
+        
         this.modal.setResizable(false);
         this.modal.setVisible(true);
-
+        
     }
-
+    
     public void addActionListener(ActionListener listener) {
         this.loginButton.addActionListener(listener);
         this.newUserButton.addActionListener(listener);
@@ -286,6 +290,7 @@ class View extends JFrame implements Observer {
         this.regButton.addActionListener(listener);
         this.addButton.addActionListener(listener);
         this.removeButton.addActionListener(listener);
+        this.saveButton.addActionListener(listener);
         this.sem1.addActionListener(listener);
         this.sem2.addActionListener(listener);
         this.addCourse.addActionListener(listener);
@@ -293,7 +298,7 @@ class View extends JFrame implements Observer {
         this.cancelBtn.addActionListener(listener);
         this.confirmBtn.addActionListener(listener);
     }
-
+    
     @Override
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
@@ -308,7 +313,7 @@ class View extends JFrame implements Observer {
         ArrayList<String> saveCourseList = new ArrayList<String>();
         ArrayList<String> saveStreamList = new ArrayList<String>();
         ArrayList saveTableValues = new ArrayList();
-
+        
         if (data.registerFlag) {
             this.registerStart();
             data.registerFlag = false;
@@ -329,19 +334,19 @@ class View extends JFrame implements Observer {
             String lower = "10";
             String upper2 = "54";
             String lower2 = "50";
-
+            
             for (int i = 0; i < jListModel.size(); i++) {
                 String[] split = jListModel.get(i).split("/");
                 saveStreamList.add(split[1]);
                 saveCourseList.add(split[0]);
             }
-
+            
             for (int j = 0; j < cTable.getRowCount(); j++) {
                 for (int f = 0; f < cTable.getColumnCount(); f++) {
                     saveTableValues.add(cTable.getValueAt(j, f));
                 }
             }
-
+            
             for (int e = 0; e < saveTableValues.size(); e++) {
                 saveTableCourseCode.add(saveTableValues.get(e).toString());
                 saveTableStreamCode.add(saveTableValues.get(++e).toString());
@@ -354,17 +359,17 @@ class View extends JFrame implements Observer {
                 JOptionPane.showMessageDialog(this.modal, "You cannot exceed 4 papers");
                 data.confirmCourse = false;
             } else {
-
+                
                 for (String e : saveTableCourseCode) {
                     for (String f : saveCourseList) {
                         if (e.contains(f)) {
-                            JOptionPane.showMessageDialog(this.modal, "You already have "+f+" added!");
+                            JOptionPane.showMessageDialog(this.modal, "You already have " + f + " added!");
                             data.confirmCourse = false;
                             break outerLoop;
                         }
                     }
                 }
-
+                
                 for (String e : saveTableStreamCode) {
                     for (String f : saveStreamList) {
                         if (e.compareTo(lower) > 0 && e.compareTo(upper) < 0) {
@@ -382,7 +387,7 @@ class View extends JFrame implements Observer {
                         }
                     }
                 }
-
+                
                 for (int i = 0; i < jListModel.size(); i++) {
                     String[] split = jListModel.get(i).split("/");
                     saveCourseStream.add(split[1]);
@@ -394,7 +399,7 @@ class View extends JFrame implements Observer {
                 data.confirmCourse = false;
             }
         } else if (data.populateJListFlag) {
-
+            
             if (jListModel.getSize() < MAXPAPERS) {
                 courseString = String.valueOf(courseList.getSelectedItem());
                 String[] splitCourseString = courseString.split("/");
@@ -404,13 +409,13 @@ class View extends JFrame implements Observer {
                 String lower = "10";
                 String upper2 = "54";
                 String lower2 = "50";
-
+                
                 for (int i = 0; i < jListModel.size(); i++) {
                     String[] split = jListModel.get(i).split("/");
                     courseStream = split[1];
                     saveCourseCode.add(split[0]);
                 }
-
+                
                 if (jListModel.isEmpty()) {
                     jListModel.addElement(courseString);
                     courseAddList.setModel(jListModel);
@@ -443,22 +448,22 @@ class View extends JFrame implements Observer {
                     } else {
                         JOptionPane.showMessageDialog(this.modal, "You cannot take semester 1 and semester 2 papers in the same semester!");
                     }
-
+                    
                 }
-
+                
             } else if (jListModel.getSize() >= MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You cannot take more than 4 papers!");
             }
-
+            
             data.populateJListFlag = false;
-
+            
         } else if (data.removeJListFlag) {
             int index = courseAddList.getSelectedIndex();
-
+            
             if (index != -1) {
                 jListModel.remove(index);
             }
-
+            
             data.removeJListFlag = false;
         } else if (data.populateCourseBoxFlag) {
             comboBoxModel.removeAllElements();
@@ -466,7 +471,7 @@ class View extends JFrame implements Observer {
                 comboBoxModel.addElement(data.stream.get(i) + "/" + data.course.get(i));
             }
             courseList.setModel(comboBoxModel);
-
+            
         } else if (data.backFlag) {
             this.back();
             data.backFlag = false;
@@ -479,74 +484,75 @@ class View extends JFrame implements Observer {
         } else if (!data.passwordFlag || !data.loginFlag) {
             this.displayLogError();
         } else if (data.passwordFlag && data.loginFlag) {
+            uID.setText("ID: " + data.id);
             suName.setText("Username: " + data.username);
             sName.setText("Name: " + data.name);
             this.studentMenu();
         }
     }
-
+    
     public String getUnInput() {
         return this.unInput.getText();
     }
-
+    
     public String getNInput() {
         return this.nInput.getText();
     }
-
+    
     public String getLInput() {
         return this.lInput.getText();
     }
-
+    
     public String getPwrInput() {
         return this.pwrInput.getText();
     }
-
+    
     public char[] getPwInput() {
         return this.pwInput.getPassword();
     }
-
+    
     public String getPhInput() {
         return this.phInput.getText();
     }
-
+    
     public String getEmail() {
         return this.eInput.getText();
     }
-
+    
     public String getELog() {
         return this.eLog.getText();
     }
-
+    
     public JCheckBox getSem1() {
         return sem1;
     }
-
+    
     public JCheckBox getSem2() {
         return sem2;
     }
-
+    
     public void setUnInput() {
         this.unInput.setText("");
     }
-
+    
     public void setNInput() {
         this.nInput.setText("");
     }
-
+    
     public void setLInput() {
         this.lInput.setText("");
     }
-
+    
     public void setPwrInput() {
         this.pwrInput.setText("");
     }
-
+    
     public void setPhInput() {
         this.phInput.setText("");
     }
-
+    
     public void setEmail() {
         this.eInput.setText("");
     }
-
+    
 }

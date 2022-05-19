@@ -13,8 +13,10 @@ public class Student {
 
     private String username;
     private String name;
+    private String id;
 
-    public Student(String username, String name) {
+    public Student(String id, String username, String name) {
+        this.id = id;
         this.username = username;
         this.name = name;
     }
@@ -25,6 +27,14 @@ public class Student {
 
     public String getName() {
         return name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setUsername(String username) {

@@ -23,8 +23,6 @@ public class GUIMain {
         View view = new View();
         Model model = new Model();
         Controller controller = new Controller(view, model);
-        model.addObserver(view);
-        
-        
+        model.addObserver(view); 
     }
 }

@@ -11,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -267,19 +266,23 @@ public class Database {
     public Data getStudentInfo(String email) {
         String username = "";
         String name = "";
-        Student student = new Student(username, name);
+        String id = "";
+        Student student = new Student(id, username, name);
         Data data = new Data();
         try {
             Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT username, fname||' '||lname AS name, email FROM Users "
+            ResultSet rs = statement.executeQuery("SELECT userid, username, fname||' '||lname AS name, email FROM Users "
                     + "WHERE email = '" + email + "'");
             if (rs.next()) {
                 String rsEmail = rs.getString("email");
                 if (email.compareTo(rsEmail) == 0) {
                     username = rs.getString("username");
                     name = rs.getString("name");
+                    id = rs.getString("userid");
                     student.setUsername(username);
                     student.setName(name);
+                    student.setId(id);
+                    data.id = student.getId();
                     data.username = student.getUsername();
                     data.name = student.getName();
                     data.loginFlag = true;
