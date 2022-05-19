@@ -83,5 +83,23 @@ public class Model extends Observable {
         this.setChanged();
         this.notifyObservers(this.data);
     }
+    
+    public void cancelCourseMenu(){
+        this.data.cancelCourseMenu = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void confirmCourses(){
+        this.data.confirmCourse = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void removeFromTable(){
+        this.data.removeFromTable = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
 
 }

@@ -75,6 +75,8 @@ class View extends JFrame implements Observer {
     private JButton exitApp = new JButton("Exit");
     private JButton addCourse = new JButton("Add Course");
     private JButton removeCourse = new JButton("Remove Course");
+    private JButton cancelBtn = new JButton("Cancel");
+    private JButton confirmBtn = new JButton("Confirm");
     private JDialog modal = new JDialog(addFrame, "Course Selection", true);
     private JComboBox courseList = new JComboBox();
     private JCheckBox sem1 = new JCheckBox("Semester 1");
@@ -83,9 +85,7 @@ class View extends JFrame implements Observer {
     private DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
     private DefaultListModel<String> jListModel = new DefaultListModel<>();
     private ButtonGroup group = new ButtonGroup();
-    private final String[] cNames = new String[]{"Course Code", "Stream", "EFTS"};
-    private Object[][] data = {{"COMP603", "11", "0.5",}};
-    private DefaultTableModel model = new DefaultTableModel(data, cNames) {
+    private DefaultTableModel model = new DefaultTableModel() {
 
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -94,7 +94,7 @@ class View extends JFrame implements Observer {
     };
     private JTable cTable = new JTable(model);
     private JScrollPane sp = new JScrollPane(cTable);
-    private static final int MAXPAPERS = 5;
+    private static final int MAXPAPERS = 4;
 
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -204,6 +204,9 @@ class View extends JFrame implements Observer {
         saveButton.setBounds(250, 430, 100, 25);
         backToLogin.setBounds(30, 510, 100, 25);
         exitApp.setBounds(330, 510, 100, 25);
+        model.addColumn("Course Code");
+        model.addColumn("Stream");
+        cTable.getTableHeader().setReorderingAllowed(false);
 
         mainMenu.add(suName);
         mainMenu.add(sName);
@@ -247,16 +250,18 @@ class View extends JFrame implements Observer {
 
     public void displayCourseSelect() {
         this.modal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.modal.setSize(800, 400);
+        this.modal.setSize(750, 400);
         this.modal.setLocationRelativeTo(this);
 
         addPanel.setLayout(null);
         courseList.setBounds(50, 50, 400, 25);
         sem1.setBounds(500, 50, 100, 25);
         sem2.setBounds(600, 50, 100, 25);
-        courseAddList.setBounds(50, 150, 600, 150);
+        courseAddList.setBounds(50, 150, 630, 150);
         addCourse.setBounds(50, 100, 100, 25);
         removeCourse.setBounds(170, 100, 130, 25);
+        cancelBtn.setBounds(50, 315, 100, 25);
+        confirmBtn.setBounds(580, 315, 100, 25);
         addPanel.add(courseList);
         group.add(sem1);
         group.add(sem2);
@@ -265,6 +270,8 @@ class View extends JFrame implements Observer {
         addPanel.add(courseAddList);
         addPanel.add(addCourse);
         addPanel.add(removeCourse);
+        addPanel.add(cancelBtn);
+        addPanel.add(confirmBtn);
         modal.add(addPanel);
 
         this.modal.setResizable(false);
@@ -278,26 +285,114 @@ class View extends JFrame implements Observer {
         this.backButton.addActionListener(listener);
         this.regButton.addActionListener(listener);
         this.addButton.addActionListener(listener);
+        this.removeButton.addActionListener(listener);
         this.sem1.addActionListener(listener);
         this.sem2.addActionListener(listener);
         this.addCourse.addActionListener(listener);
         this.removeCourse.addActionListener(listener);
+        this.cancelBtn.addActionListener(listener);
+        this.confirmBtn.addActionListener(listener);
     }
 
+    @Override
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
         String courseString = "";
-        String courseCode = "";
         String courseStream = "";
         String courseComboBoxString = "";
         String courseComboBoxStream = "";
+        ArrayList<String> saveCourseCode = new ArrayList<String>();
+        ArrayList<String> saveCourseStream = new ArrayList<String>();
+        ArrayList<String> saveTableCourseCode = new ArrayList<String>();
+        ArrayList<String> saveTableStreamCode = new ArrayList<String>();
+        ArrayList<String> saveCourseList = new ArrayList<String>();
+        ArrayList<String> saveStreamList = new ArrayList<String>();
+        ArrayList saveTableValues = new ArrayList();
 
         if (data.registerFlag) {
             this.registerStart();
             data.registerFlag = false;
         } else if (data.addGUIFlag) {
-            this.displayCourseSelect();
             data.addGUIFlag = false;
+            this.displayCourseSelect();
+        } else if (data.removeFromTable) {
+            data.removeFromTable = false;
+            if (cTable.getSelectedRow() != -1) {
+                model.removeRow(cTable.getSelectedRow());
+            }
+        } else if (data.cancelCourseMenu) {
+            modal.setVisible(false);
+            jListModel.clear();
+            data.cancelCourseMenu = false;
+        } else if (data.confirmCourse) {
+            String upper = "17";
+            String lower = "10";
+            String upper2 = "54";
+            String lower2 = "50";
+
+            for (int i = 0; i < jListModel.size(); i++) {
+                String[] split = jListModel.get(i).split("/");
+                saveStreamList.add(split[1]);
+                saveCourseList.add(split[0]);
+            }
+
+            for (int j = 0; j < cTable.getRowCount(); j++) {
+                for (int f = 0; f < cTable.getColumnCount(); f++) {
+                    saveTableValues.add(cTable.getValueAt(j, f));
+                }
+            }
+
+            for (int e = 0; e < saveTableValues.size(); e++) {
+                saveTableCourseCode.add(saveTableValues.get(e).toString());
+                saveTableStreamCode.add(saveTableValues.get(++e).toString());
+            }
+            outerLoop:
+            if (model.getRowCount() == MAXPAPERS) {
+                JOptionPane.showMessageDialog(this.modal, "You have 4 papers added already!");
+                data.confirmCourse = false;
+            } else if (model.getRowCount() + jListModel.getSize() > MAXPAPERS) {
+                JOptionPane.showMessageDialog(this.modal, "You cannot exceed 4 papers");
+                data.confirmCourse = false;
+            } else {
+
+                for (String e : saveTableCourseCode) {
+                    for (String f : saveCourseList) {
+                        if (e.contains(f)) {
+                            JOptionPane.showMessageDialog(this.modal, "You already have "+f+" added!");
+                            data.confirmCourse = false;
+                            break outerLoop;
+                        }
+                    }
+                }
+
+                for (String e : saveTableStreamCode) {
+                    for (String f : saveStreamList) {
+                        if (e.compareTo(lower) > 0 && e.compareTo(upper) < 0) {
+                            if (f.compareTo(lower2) >= 0 && f.compareTo(upper2) < 0) {
+                                JOptionPane.showMessageDialog(this.modal, "You cannot take this paper with semester 1 papers!");
+                                data.confirmCourse = false;
+                                break outerLoop;
+                            }
+                        } else if (e.compareTo(lower2) > 0 && e.compareTo(upper2) < 0) {
+                            if (f.compareTo(lower) >= 0 && f.compareTo(upper) < 0) {
+                                JOptionPane.showMessageDialog(this.modal, "You cannot take this paper with semester 2 papers!");
+                                data.confirmCourse = false;
+                                break outerLoop;
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < jListModel.size(); i++) {
+                    String[] split = jListModel.get(i).split("/");
+                    saveCourseStream.add(split[1]);
+                    saveCourseCode.add(split[0]);
+                    model.addRow(new Object[]{saveCourseCode.get(i), saveCourseStream.get(i)});
+                }
+                modal.setVisible(false);
+                jListModel.clear();
+                data.confirmCourse = false;
+            }
         } else if (data.populateJListFlag) {
 
             if (jListModel.getSize() < MAXPAPERS) {
@@ -312,34 +407,39 @@ class View extends JFrame implements Observer {
 
                 for (int i = 0; i < jListModel.size(); i++) {
                     String[] split = jListModel.get(i).split("/");
-                    courseCode = split[0];
                     courseStream = split[1];
+                    saveCourseCode.add(split[0]);
                 }
 
                 if (jListModel.isEmpty()) {
                     jListModel.addElement(courseString);
                     courseAddList.setModel(jListModel);
                 } else {
+                    outerLoop:
                     if (courseStream.compareTo(lower) >= 0
                             && courseStream.compareTo(upper) <= 0
                             && courseComboBoxStream.compareTo(lower) >= 0
                             && courseComboBoxStream.compareTo(upper) <= 0) {
-                        if (courseCode.equals(courseComboBoxString)) {
-                            JOptionPane.showMessageDialog(this.modal, "You already have " + courseCode + " added!");
-                        } else {
-                            jListModel.addElement(courseString);
-                            courseAddList.setModel(jListModel);
+                        for (String e : saveCourseCode) {
+                            if (e.contains(courseComboBoxString)) {
+                                JOptionPane.showMessageDialog(this.modal, "You already have " + e + " added!");
+                                break outerLoop;
+                            }
                         }
+                        jListModel.addElement(courseString);
+                        courseAddList.setModel(jListModel);
                     } else if (courseStream.compareTo(lower2) >= 0
                             && courseStream.compareTo(upper2) <= 0
                             && courseComboBoxStream.compareTo(lower2) >= 0
                             && courseComboBoxStream.compareTo(upper2) <= 0) {
-                        if (courseCode.equals(courseComboBoxString)) {
-                            JOptionPane.showMessageDialog(this.modal, "You already have " + courseCode + " added!");
-                        } else {
-                            jListModel.addElement(courseString);
-                            courseAddList.setModel(jListModel);
+                        for (String e : saveCourseCode) {
+                            if (e.contains(courseComboBoxString)) {
+                                JOptionPane.showMessageDialog(this.modal, "You already have " + e + " added!");
+                                break outerLoop;
+                            }
                         }
+                        jListModel.addElement(courseString);
+                        courseAddList.setModel(jListModel);
                     } else {
                         JOptionPane.showMessageDialog(this.modal, "You cannot take semester 1 and semester 2 papers in the same semester!");
                     }
@@ -347,7 +447,7 @@ class View extends JFrame implements Observer {
                 }
 
             } else if (jListModel.getSize() >= MAXPAPERS) {
-                JOptionPane.showMessageDialog(this.modal, "You cannot take more than 5 papers!");
+                JOptionPane.showMessageDialog(this.modal, "You cannot take more than 4 papers!");
             }
 
             data.populateJListFlag = false;

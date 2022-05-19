@@ -23,6 +23,9 @@ public class Data {
     boolean populateCourseBoxFlag = false;
     boolean populateJListFlag = false;
     boolean removeJListFlag = false;
+    boolean cancelCourseMenu = false;
+    boolean confirmCourse = false;
+    boolean removeFromTable = false;
     ArrayList<String> course = new ArrayList<String>();
     ArrayList<String> stream = new ArrayList<String>();
     String username = "";

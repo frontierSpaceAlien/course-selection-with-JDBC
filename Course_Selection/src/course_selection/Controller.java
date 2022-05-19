@@ -68,6 +68,15 @@ class Controller implements ActionListener {
             case "Remove Course":
                 this.model.removeCourseFromList();
                 break;
+            case "Cancel":
+                this.model.cancelCourseMenu();
+                break;
+            case "Confirm":
+                this.model.confirmCourses();
+                break;
+            case "Remove":
+                this.model.removeFromTable();
+                break;
             default:
                 break;
         }
