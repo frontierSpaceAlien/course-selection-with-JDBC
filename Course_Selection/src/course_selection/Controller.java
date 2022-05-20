@@ -7,6 +7,7 @@ package course_selection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  *
@@ -78,12 +79,36 @@ class Controller implements ActionListener {
                 this.model.removeFromTable();
                 break;
             case "Save":
+                ArrayList<String> saveTableCourseCode = new ArrayList<String>();
+                ArrayList<Integer> saveTableStreamCode = new ArrayList<Integer>();
+                ArrayList saveTableValues = new ArrayList();
+
+                for (int j = 0; j < view.getcTable().getRowCount(); j++) {
+                    for (int f = 0; f < view.getcTable().getColumnCount(); f++) {
+                        saveTableValues.add(view.getcTable().getValueAt(j, f));
+                    }
+                }
+
+                for (int f = 0; f < saveTableValues.size(); f++) {
+                    saveTableCourseCode.add(saveTableValues.get(f).toString());
+                    saveTableStreamCode.add(Integer.parseInt(saveTableValues.get(++f).toString()));
+                }
+
+                String[] split = this.view.getuID().getText().split(" ");
+                String saveID = split[1];
+                
+                this.model.saveToDatabase(saveID, saveTableCourseCode, saveTableStreamCode);
+                break;
+            case "Back to login":
+                this.model.backToLogin();
+                break;
+            case "Exit":
+                this.model.exitApp();
                 break;
             default:
                 break;
         }
-        
-        
+
     }
-    
+
 }

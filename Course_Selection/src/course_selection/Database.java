@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,24 +35,27 @@ public class Database {
             String[] tableName = {"Users", "Courses", "studentCourses", "Stream", "Semester"};
 
             if (!checkTableExisting(tableName)) {
-                statement.executeUpdate("CREATE TABLE Users (userid VARCHAR(100) PRIMARY KEY NOT NULL, "
+                statement.executeUpdate("CREATE TABLE Users (ID INT NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),"
+                        + "userid VARCHAR(100) NOT NULL, "
                         + "username VARCHAR(30), "
                         + "fname VARCHAR(50),"
                         + " lname VARCHAR(50), "
                         + "password VARCHAR(50), "
                         + "phone VARCHAR(50),"
-                        + " email VARCHAR(100))");
+                        + " email VARCHAR(100),"
+                        + "PRIMARY KEY (ID))");
                 statement.executeUpdate("CREATE TABLE Courses (courseID VARCHAR(20) PRIMARY KEY NOT NULL, "
                         + "courseName VARCHAR(200))");
-                statement.executeUpdate("CREATE TABLE studentCourses (userid VARCHAR(100) NOT NULL,"
-                        + " courseID VARCHAR(20) NOT NULL,"
-                        + "CONSTRAINT courseID_FK FOREIGN KEY (courseID) REFERENCES Courses (courseID),"
-                        + "CONSTRAINT userID_FK FOREIGN KEY (userid) REFERENCES Users (userid),"
-                        + " PRIMARY KEY (userid, courseID))");
-                statement.executeUpdate("CREATE TABLE Stream (ID INT NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1)"
+                statement.executeUpdate("CREATE TABLE Stream (StreamID INT NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1)"
                         + ", StreamNum INT NOT NULL,"
                         + " courseID VARCHAR(20) REFERENCES Courses (courseID), "
-                        + "PRIMARY KEY (ID))");
+                        + "PRIMARY KEY (StreamID))");
+                statement.executeUpdate("CREATE TABLE studentCourses (sID INT NOT NULL GENERATED ALWAYS AS IDENTITY(START WITH 1, INCREMENT BY 1),"
+                        + " userid VARCHAR(100) NOT NULL,"
+                        + " courseID VARCHAR(20) NOT NULL, StreamID INT NOT NULL,"
+                        + "CONSTRAINT courseID_FK FOREIGN KEY (courseID) REFERENCES Courses (courseID),"
+                        + "CONSTRAINT id_FK FOREIGN KEY (StreamID) REFERENCES Stream (StreamID),"
+                        + "PRIMARY KEY (userid, courseID, StreamID))");
 
                 statement.executeUpdate("INSERT INTO Courses VALUES "
                         + "('COMP500','Programming Concepts and Techniques'),"
@@ -193,7 +197,7 @@ public class Database {
         int id = generator.nextInt(500000);
         try {
             statement = conn.createStatement();
-            statement.executeUpdate("INSERT INTO Users "
+            statement.executeUpdate("INSERT INTO Users (userid,username, fname, lname, password, phone, email) "
                     + "VALUES ('" + id + "', '" + userName + "' , '" + fName + "', '" + lName
                     + "' , '" + password + "' , '" + phNum + "' , '" + email + "')");
         } catch (SQLException ex) {
@@ -329,6 +333,71 @@ public class Database {
 
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return data;
+    }
+
+    public Data saveToDatabase(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
+        Data data = new Data();
+
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet check = statement.executeQuery("SELECT userid FROM studentCourses "
+                    + "WHERE userid = '" + id + "'");
+            if (check.next()) {
+                if (id.equals(check.getString("userid"))) {
+                    data.checkForExist = true;
+                    return data;
+                }
+            }
+
+            for (int i = 0; i < courseCode.size(); i++) {
+                ResultSet rs = statement.executeQuery("SELECT StreamID, StreamNum, courseID FROM Stream "
+                        + "WHERE courseID = '" + courseCode.get(i) + "' "
+                        + "AND StreamNum = " + streamCode.get(i) + "");
+
+                if (rs.next()) {
+                    String courseID = rs.getString("courseID");
+                    int idStream = rs.getInt("StreamID");
+                    statement.executeUpdate("INSERT INTO studentCourses (userid, courseID, StreamID) "
+                            + "VALUES ('" + id + "', '" + courseID + "', " + idStream + ")");
+                }
+
+            }
+
+            data.saveToDatabase = true;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return data;
+    }
+
+    public Data updateSelection(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
+        Data data = new Data();
+
+        try {
+            Statement statement = conn.createStatement();
+            statement.executeUpdate("DELETE FROM studentCourses WHERE userid = '" + id + "'");
+
+            for (int i = 0; i < courseCode.size(); i++) {
+                ResultSet rs = statement.executeQuery("SELECT StreamID, StreamNum, courseID FROM Stream "
+                        + "WHERE courseID = '" + courseCode.get(i) + "' "
+                        + "AND StreamNum = " + streamCode.get(i) + "");
+
+                if (rs.next()) {
+                    String courseID = rs.getString("courseID");
+                    int idStream = rs.getInt("StreamID");
+                    statement.executeUpdate("INSERT INTO studentCourses (userid, courseID, StreamID) "
+                            + "VALUES ('" + id + "', '" + courseID + "', " + idStream + ")");
+                }
+
+            }
+            data.updateFlag = true;
+        } catch (SQLException ex) {
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex); 
         }
 
         return data;

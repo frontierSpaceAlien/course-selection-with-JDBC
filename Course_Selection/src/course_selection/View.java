@@ -5,7 +5,6 @@
  */
 package course_selection;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -34,12 +33,12 @@ import javax.swing.table.DefaultTableModel;
  * @author Derek Lien
  */
 class View extends JFrame implements Observer {
-    
+
+    private JFrame addFrame = new JFrame();
     private JPanel userPanel = new JPanel();
     private JPanel regPanel = new JPanel();
     private JPanel mainMenu = new JPanel();
     private JPanel addPanel = new JPanel();
-    private JFrame addFrame = new JFrame();
     private JLabel uRegName = new JLabel("Username: ");
     private JLabel fName = new JLabel("First Name: ");
     private JLabel lName = new JLabel("Last Name: ");
@@ -48,10 +47,8 @@ class View extends JFrame implements Observer {
     private JLabel phNum = new JLabel("Phone Number: ");
     private JLabel pw = new JLabel("Password: ");
     private JLabel pwrLabel = new JLabel("Password: ");
-    private JLabel eRegMsg = new JLabel("User already exists!");
     private JLabel logMessage = new JLabel("Course Selection");
     private JLabel regMessage = new JLabel("Register");
-    private JLabel logError = new JLabel("Invalid Login");
     private JLabel suName = new JLabel();
     private JLabel sName = new JLabel();
     private JLabel uID = new JLabel();
@@ -72,7 +69,7 @@ class View extends JFrame implements Observer {
     private JButton addButton = new JButton("Add");
     private JButton removeButton = new JButton("Remove");
     private JButton saveButton = new JButton("Save");
-    private JButton backToLogin = new JButton("Back");
+    private JButton backToLogin = new JButton("Back to login");
     private JButton exitApp = new JButton("Exit");
     private JButton addCourse = new JButton("Add Course");
     private JButton removeCourse = new JButton("Remove Course");
@@ -86,24 +83,25 @@ class View extends JFrame implements Observer {
     private DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
     private DefaultListModel<String> jListModel = new DefaultListModel<>();
     private ButtonGroup group = new ButtonGroup();
-    private DefaultTableModel model = new DefaultTableModel() {
-        
+    private DefaultTableModel tableModel = new DefaultTableModel() {
+
         @Override
         public boolean isCellEditable(int row, int column) {
             return false;
         }
     };
-    private JTable cTable = new JTable(model);
+    private JTable cTable = new JTable(tableModel);
     private JScrollPane sp = new JScrollPane(cTable);
+    Model model = new Model();
     private static final int MAXPAPERS = 4;
-    
+
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(350, 200);
         this.setLocationRelativeTo(null);
-        
+
         userPanel.setLayout(null);
-        
+
         logMessage.setBounds(10, 10, 250, 25);
         logMessage.setFont(new Font("Grandview", Font.BOLD, 24));
         eLogLabel.setBounds(10, 40, 80, 25);
@@ -112,7 +110,7 @@ class View extends JFrame implements Observer {
         pwInput.setBounds(100, 70, 165, 25);
         loginButton.setBounds(10, 100, 80, 25);
         newUserButton.setBounds(100, 100, 150, 25);
-        
+
         userPanel.add(logMessage);
         userPanel.add(eLogLabel);
         userPanel.add(eLog);
@@ -120,14 +118,16 @@ class View extends JFrame implements Observer {
         userPanel.add(pwInput);
         userPanel.add(loginButton);
         userPanel.add(newUserButton);
-        
+
         this.add(userPanel);
         this.setVisible(true);
         this.setResizable(false);
         this.setTitle("Course Selection");
     }
-    
+
     public void back() {
+        eLog.setText("");
+        pwInput.setText("");
         this.setSize(350, 200);
         this.getContentPane().removeAll();
         this.setLocationRelativeTo(null);
@@ -135,66 +135,68 @@ class View extends JFrame implements Observer {
         this.revalidate();
         this.repaint();
     }
-    
+
     public void registerStart() {
         regPanel.setLayout(null);
         this.setSize(800, 600);
-        
+
         regMessage.setBounds(300, 20, 250, 100);
         regMessage.setFont(new Font("Grandview", Font.BOLD, 48));
         regPanel.add(regMessage);
-        
+
         uRegName.setBounds(250, 120, 100, 25);
         unInput.setBounds(250, 150, 300, 25);
         regPanel.add(uRegName);
         regPanel.add(unInput);
-        
+
         fName.setBounds(250, 180, 100, 25);
         nInput.setBounds(250, 210, 300, 25);
         regPanel.add(fName);
         regPanel.add(nInput);
-        
+
         lName.setBounds(250, 240, 100, 25);
         lInput.setBounds(250, 270, 300, 25);
         regPanel.add(lName);
         regPanel.add(lInput);
-        
+
         pwrLabel.setBounds(250, 300, 100, 25);
         pwrInput.setBounds(250, 330, 300, 25);
         regPanel.add(pwrLabel);
         regPanel.add(pwrInput);
-        
+
         phNum.setBounds(250, 360, 100, 25);
         phInput.setBounds(250, 390, 300, 25);
         regPanel.add(phNum);
         regPanel.add(phInput);
-        
+
         email.setBounds(250, 420, 100, 25);
         eInput.setBounds(250, 450, 300, 25);
         regPanel.add(email);
         regPanel.add(eInput);
-        
+
         backButton.setBounds(250, 500, 100, 25);
         regPanel.add(backButton);
-        
+
         regButton.setBounds(450, 500, 100, 25);
         regPanel.add(regButton);
-        
+
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(regPanel);
         this.revalidate();
         this.repaint();
     }
-    
+
     public void studentMenu() {
+        tableModel.setColumnCount(0);
+        tableModel.setRowCount(0);
         mainMenu.setLayout(null);
         this.setSize(480, 600);
         suName.setFont(new Font("Arial", Font.PLAIN, 14));
         sName.setFont(new Font("Arial", Font.PLAIN, 14));
         courses.setFont(new Font("Arial", Font.PLAIN, 14));
         uID.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
         uID.setBounds(30, 20, 250, 100);
         suName.setBounds(30, 60, 250, 100);
         sName.setBounds(30, 100, 250, 100);
@@ -205,11 +207,11 @@ class View extends JFrame implements Observer {
         saveButton.setBounds(250, 430, 100, 25);
         backToLogin.setBounds(30, 510, 100, 25);
         exitApp.setBounds(330, 510, 100, 25);
-        model.addColumn("Course Code");
-        model.addColumn("Stream");
+        tableModel.addColumn("Course Code");
+        tableModel.addColumn("Stream");
         cTable.getTableHeader().setReorderingAllowed(false);
         cTable.setFillsViewportHeight(true);
-        
+
         mainMenu.add(suName);
         mainMenu.add(sName);
         mainMenu.add(uID);
@@ -220,41 +222,20 @@ class View extends JFrame implements Observer {
         mainMenu.add(saveButton);
         mainMenu.add(backToLogin);
         mainMenu.add(exitApp);
-        
+
         this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
         this.add(mainMenu);
         this.revalidate();
         this.repaint();
     }
-    
-    public void displayErrorReg() {
-        eRegMsg.setBounds(350, 530, 100, 25);
-        eRegMsg.setForeground(Color.red);
-        regPanel.add(eRegMsg);
-        
-        this.getContentPane().removeAll();
-        this.add(regPanel);
-        this.revalidate();
-        this.repaint();
-    }
-    
-    public void displayLogError() {
-        logError.setBounds(10, 130, 250, 25);
-        logError.setForeground(Color.red);
-        userPanel.add(logError);
-        
-        this.getContentPane().removeAll();
-        this.add(userPanel);
-        this.revalidate();
-        this.repaint();
-    }
-    
+
     public void displayCourseSelect() {
+
         this.modal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.modal.setSize(750, 400);
         this.modal.setLocationRelativeTo(this);
-        
+
         addPanel.setLayout(null);
         selectCourseLabel.setBounds(50, 30, 100, 25);
         courseList.setBounds(50, 50, 400, 25);
@@ -277,12 +258,48 @@ class View extends JFrame implements Observer {
         addPanel.add(cancelBtn);
         addPanel.add(confirmBtn);
         modal.add(addPanel);
-        
+
         this.modal.setResizable(false);
         this.modal.setVisible(true);
-        
+
     }
-    
+
+    public void existDialogue() {
+
+        if (tableModel.getRowCount() == 0
+                || tableModel.getColumnCount() == 0) {
+            JOptionPane.showMessageDialog(mainMenu, "No selected courses");
+        } else {
+            int dialogue = JOptionPane.showConfirmDialog(null, "There is an existing record\nWould you like to update this record?",
+                    "Course Selection", JOptionPane.YES_NO_OPTION);
+            if (dialogue == JOptionPane.YES_OPTION) {
+                ArrayList<String> saveTableCourseCode = new ArrayList<String>();
+                ArrayList<Integer> saveTableStreamCode = new ArrayList<Integer>();
+                ArrayList saveTableValues = new ArrayList();
+
+                for (int j = 0; j < cTable.getRowCount(); j++) {
+                    for (int f = 0; f < cTable.getColumnCount(); f++) {
+                        saveTableValues.add(cTable.getValueAt(j, f));
+                    }
+                }
+
+                for (int f = 0; f < saveTableValues.size(); f++) {
+                    saveTableCourseCode.add(saveTableValues.get(f).toString());
+                    saveTableStreamCode.add(Integer.parseInt(saveTableValues.get(++f).toString()));
+                }
+
+                String[] split = this.getuID().getText().split(" ");
+                String saveID = split[1];
+
+                this.model.updateDatabase(saveID, saveTableCourseCode, saveTableStreamCode);
+
+            } else {
+                JOptionPane.getRootFrame().dispose();
+            }
+        }
+
+    }
+
     public void addActionListener(ActionListener listener) {
         this.loginButton.addActionListener(listener);
         this.newUserButton.addActionListener(listener);
@@ -297,8 +314,10 @@ class View extends JFrame implements Observer {
         this.removeCourse.addActionListener(listener);
         this.cancelBtn.addActionListener(listener);
         this.confirmBtn.addActionListener(listener);
+        this.backToLogin.addActionListener(listener);
+        this.exitApp.addActionListener(listener);
     }
-    
+
     @Override
     public void update(Observable obs, Object obj) {
         Data data = (Data) obj;
@@ -313,53 +332,90 @@ class View extends JFrame implements Observer {
         ArrayList<String> saveCourseList = new ArrayList<String>();
         ArrayList<String> saveStreamList = new ArrayList<String>();
         ArrayList saveTableValues = new ArrayList();
-        
+
         if (data.registerFlag) {
-            this.registerStart();
             data.registerFlag = false;
+            this.registerStart();
+            
         } else if (data.addGUIFlag) {
             data.addGUIFlag = false;
             this.displayCourseSelect();
+            
+        } else if (data.exitFlag) {
+            data.exitFlag = false;
+            int dialogue = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?\nAny unsaved selections will be lost!",
+                    "Course Selection", JOptionPane.YES_NO_OPTION);
+
+            if (dialogue == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            } else {
+                JOptionPane.getRootFrame().dispose();
+            }
+        } else if (data.backToLoginFlag) {
+            data.passwordFlag = false;
+            data.loginFlag = false;
+
+            int dialogue = JOptionPane.showConfirmDialog(null, "Are you sure you want to go back to login?\nAny unsaved selections will be lost!",
+                    "Course Selection", JOptionPane.YES_NO_OPTION);
+
+            if (dialogue == JOptionPane.YES_OPTION) {
+                this.back();
+            } else {
+                JOptionPane.getRootFrame().dispose();
+            }
+
+        } else if (data.saveToDatabase) {
+            data.saveToDatabase = false;
+            JOptionPane.showMessageDialog(this.mainMenu, "Courses successfully saved!");
+            
+        } else if (data.checkForExist) {
+            data.checkForExist = false;
+            this.existDialogue();
+            
         } else if (data.removeFromTable) {
             data.removeFromTable = false;
             if (cTable.getSelectedRow() != -1) {
-                model.removeRow(cTable.getSelectedRow());
+                tableModel.removeRow(cTable.getSelectedRow());
             }
+            
         } else if (data.cancelCourseMenu) {
             modal.setVisible(false);
             jListModel.clear();
             data.cancelCourseMenu = false;
+            
         } else if (data.confirmCourse) {
             String upper = "17";
             String lower = "10";
             String upper2 = "54";
             String lower2 = "50";
-            
+
             for (int i = 0; i < jListModel.size(); i++) {
                 String[] split = jListModel.get(i).split("/");
                 saveStreamList.add(split[1]);
                 saveCourseList.add(split[0]);
             }
-            
+
             for (int j = 0; j < cTable.getRowCount(); j++) {
                 for (int f = 0; f < cTable.getColumnCount(); f++) {
                     saveTableValues.add(cTable.getValueAt(j, f));
                 }
             }
-            
+
             for (int e = 0; e < saveTableValues.size(); e++) {
                 saveTableCourseCode.add(saveTableValues.get(e).toString());
                 saveTableStreamCode.add(saveTableValues.get(++e).toString());
             }
             outerLoop:
-            if (model.getRowCount() == MAXPAPERS) {
+            if (tableModel.getRowCount() == MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You have 4 papers added already!");
                 data.confirmCourse = false;
-            } else if (model.getRowCount() + jListModel.getSize() > MAXPAPERS) {
+                
+            } else if (tableModel.getRowCount() + jListModel.getSize() > MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You cannot exceed 4 papers");
                 data.confirmCourse = false;
-            } else {
                 
+            } else {
+
                 for (String e : saveTableCourseCode) {
                     for (String f : saveCourseList) {
                         if (e.contains(f)) {
@@ -369,7 +425,7 @@ class View extends JFrame implements Observer {
                         }
                     }
                 }
-                
+
                 for (String e : saveTableStreamCode) {
                     for (String f : saveStreamList) {
                         if (e.compareTo(lower) > 0 && e.compareTo(upper) < 0) {
@@ -387,19 +443,20 @@ class View extends JFrame implements Observer {
                         }
                     }
                 }
-                
+
                 for (int i = 0; i < jListModel.size(); i++) {
                     String[] split = jListModel.get(i).split("/");
                     saveCourseStream.add(split[1]);
                     saveCourseCode.add(split[0]);
-                    model.addRow(new Object[]{saveCourseCode.get(i), saveCourseStream.get(i)});
+                    tableModel.addRow(new Object[]{saveCourseCode.get(i), saveCourseStream.get(i)});
                 }
                 modal.setVisible(false);
                 jListModel.clear();
                 data.confirmCourse = false;
             }
-        } else if (data.populateJListFlag) {
             
+        } else if (data.populateJListFlag) {
+
             if (jListModel.getSize() < MAXPAPERS) {
                 courseString = String.valueOf(courseList.getSelectedItem());
                 String[] splitCourseString = courseString.split("/");
@@ -409,13 +466,13 @@ class View extends JFrame implements Observer {
                 String lower = "10";
                 String upper2 = "54";
                 String lower2 = "50";
-                
+
                 for (int i = 0; i < jListModel.size(); i++) {
                     String[] split = jListModel.get(i).split("/");
                     courseStream = split[1];
                     saveCourseCode.add(split[0]);
                 }
-                
+
                 if (jListModel.isEmpty()) {
                     jListModel.addElement(courseString);
                     courseAddList.setModel(jListModel);
@@ -448,41 +505,46 @@ class View extends JFrame implements Observer {
                     } else {
                         JOptionPane.showMessageDialog(this.modal, "You cannot take semester 1 and semester 2 papers in the same semester!");
                     }
-                    
+
                 }
-                
+
             } else if (jListModel.getSize() >= MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You cannot take more than 4 papers!");
             }
-            
+
             data.populateJListFlag = false;
-            
+
         } else if (data.removeJListFlag) {
             int index = courseAddList.getSelectedIndex();
-            
+
             if (index != -1) {
                 jListModel.remove(index);
             }
-            
+
             data.removeJListFlag = false;
+            
         } else if (data.populateCourseBoxFlag) {
             comboBoxModel.removeAllElements();
             for (int i = 0; i < data.course.size(); i++) {
                 comboBoxModel.addElement(data.stream.get(i) + "/" + data.course.get(i));
             }
             courseList.setModel(comboBoxModel);
-            
+
         } else if (data.backFlag) {
             this.back();
             data.backFlag = false;
+            
         } else if (data.createUserFlag) {
             JOptionPane.showMessageDialog(this, "Register Successful");
             this.back();
             data.createUserFlag = false;
+            
         } else if (!data.invalidFlag) {
-            this.displayErrorReg();
+            JOptionPane.showMessageDialog(this, "User already exists!");
+            
         } else if (!data.passwordFlag || !data.loginFlag) {
-            this.displayLogError();
+            JOptionPane.showMessageDialog(this, "Invalid Login");
+            
         } else if (data.passwordFlag && data.loginFlag) {
             uID.setText("ID: " + data.id);
             suName.setText("Username: " + data.username);
@@ -490,69 +552,85 @@ class View extends JFrame implements Observer {
             this.studentMenu();
         }
     }
-    
+
+    public JLabel getuID() {
+        return uID;
+    }
+
+    public void setuID(JLabel uID) {
+        this.uID = uID;
+    }
+
+    public JTable getcTable() {
+        return cTable;
+    }
+
+    public void setcTable(JTable cTable) {
+        this.cTable = cTable;
+    }
+
     public String getUnInput() {
         return this.unInput.getText();
     }
-    
+
     public String getNInput() {
         return this.nInput.getText();
     }
-    
+
     public String getLInput() {
         return this.lInput.getText();
     }
-    
+
     public String getPwrInput() {
         return this.pwrInput.getText();
     }
-    
+
     public char[] getPwInput() {
         return this.pwInput.getPassword();
     }
-    
+
     public String getPhInput() {
         return this.phInput.getText();
     }
-    
+
     public String getEmail() {
         return this.eInput.getText();
     }
-    
+
     public String getELog() {
         return this.eLog.getText();
     }
-    
+
     public JCheckBox getSem1() {
         return sem1;
     }
-    
+
     public JCheckBox getSem2() {
         return sem2;
     }
-    
+
     public void setUnInput() {
         this.unInput.setText("");
     }
-    
+
     public void setNInput() {
         this.nInput.setText("");
     }
-    
+
     public void setLInput() {
         this.lInput.setText("");
     }
-    
+
     public void setPwrInput() {
         this.pwrInput.setText("");
     }
-    
+
     public void setPhInput() {
         this.phInput.setText("");
     }
-    
+
     public void setEmail() {
         this.eInput.setText("");
     }
-    
+
 }

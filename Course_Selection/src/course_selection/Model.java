@@ -5,6 +5,7 @@
  */
 package course_selection;
 
+import java.util.ArrayList;
 import java.util.Observable;
 
 /**
@@ -55,7 +56,9 @@ public class Model extends Observable {
 
     public void checkLogin(String email, char[] password) {
         this.data = this.db.checkLoginUser(email, password);
-        this.data = this.db.getStudentInfo(email);
+        if (data.loginFlag || data.passwordFlag) {
+            this.data = this.db.getStudentInfo(email);
+        }
         this.setChanged();
         this.notifyObservers(this.data);
     }
@@ -102,4 +105,27 @@ public class Model extends Observable {
         this.notifyObservers(this.data);
     }
 
+    public void saveToDatabase(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
+        this.data = this.db.saveToDatabase(id, courseCode, streamCode);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+
+    public void updateDatabase(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
+        this.data = this.db.updateSelection(id, courseCode, streamCode);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void backToLogin(){
+        this.data.backToLoginFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void exitApp(){
+        this.data.exitFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
 }

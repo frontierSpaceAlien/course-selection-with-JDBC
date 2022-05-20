@@ -26,6 +26,11 @@ public class Data {
     boolean cancelCourseMenu = false;
     boolean confirmCourse = false;
     boolean removeFromTable = false;
+    boolean saveToDatabase = false;
+    boolean checkForExist = false;
+    boolean updateFlag = false;
+    boolean backToLoginFlag = false;
+    boolean exitFlag = false;
     ArrayList<String> course = new ArrayList<String>();
     ArrayList<String> stream = new ArrayList<String>();
     String username = "";
