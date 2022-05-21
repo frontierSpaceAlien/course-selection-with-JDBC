@@ -24,10 +24,11 @@ public class Database {
 
     Connection conn = null;
     String url = "jdbc:derby:CourseDB; create=true";
-
+    public ValidateFields valid = new ValidateFields();
     String dbUserName = "pdc";
     String dbPassword = "pdc";
-
+// creates the tables and inserts relevant information.
+// only needs to run once.
     public void dbsetup() {
         try {
             conn = DriverManager.getConnection(url, dbUserName, dbPassword);
@@ -163,7 +164,8 @@ public class Database {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+// checks for existing tables so the program does not create duplicate tables or 
+// throws an exception
     private boolean checkTableExisting(String[] newTableName) {
         boolean flag = false;
         try {
@@ -189,7 +191,7 @@ public class Database {
         }
         return flag;
     }
-
+// saves the user's info into the database
     public void saveUser(String userName, String fName, String lName, String password,
             String phNum, String email) {
         Statement statement;
@@ -204,9 +206,10 @@ public class Database {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+// checks if the text the user entered is valid or not
     public Data checkLoginUser(String email, char[] password) {
         Data data = new Data();
+        data.checkIfAtLogin = true;
         try {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT email, password FROM Users "
@@ -239,7 +242,7 @@ public class Database {
 
         return data;
     }
-
+// checks if there is an existing user in the database
     public Data checkNewRegUser(String userName, String fName, String lName, String password,
             String phNum, String email) {
         Data data = new Data();
@@ -247,17 +250,23 @@ public class Database {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT userid, email FROM Users "
                     + "WHERE email = '" + email + "'");
-            if (rs.next()) {
-                String rsEmail = rs.getString("email");
-                if (email.compareTo(rsEmail) == 0) {
-                    data.invalidFlag = false;
+            if (email.equals("") || !email.matches(valid.getEMAIL_PATTERN())) {
+                return data;
+            } else {
+                if (rs.next()) {
+                    String rsEmail = rs.getString("email");
+
+                    if (email.compareTo(rsEmail) == 0) {
+                        data.invalidFlag = false;
+                    } else {
+                        data.createUserFlag = true;
+                        data.invalidFlag = true;
+                    }
                 } else {
                     data.createUserFlag = true;
                     data.invalidFlag = true;
                 }
-            } else {
-                data.createUserFlag = true;
-                data.invalidFlag = true;
+
             }
 
         } catch (SQLException ex) {
@@ -266,13 +275,14 @@ public class Database {
 
         return data;
     }
-
+// gets the student information from the database and saves it to the gui
     public Data getStudentInfo(String email) {
         String username = "";
         String name = "";
         String id = "";
         Student student = new Student(id, username, name);
         Data data = new Data();
+        data.checkIfAtLogin = true;
         try {
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT userid, username, fname||' '||lname AS name, email FROM Users "
@@ -301,7 +311,7 @@ public class Database {
 
         return data;
     }
-
+// gets the papers that are in each semester according to which semester the user picks
     public Data getCourseInfoSem(String semester) {
         Data data = new Data();
 
@@ -337,7 +347,7 @@ public class Database {
 
         return data;
     }
-
+// iterates through the arraylists and saves it to the database
     public Data saveToDatabase(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
         Data data = new Data();
 
@@ -374,7 +384,8 @@ public class Database {
 
         return data;
     }
-
+// updates existing rows based on the users selection by deleting the existing rows and adding new 
+// information.
     public Data updateSelection(String id, ArrayList<String> courseCode, ArrayList<Integer> streamCode) {
         Data data = new Data();
 
@@ -397,7 +408,7 @@ public class Database {
             }
             data.updateFlag = true;
         } catch (SQLException ex) {
-            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex); 
+            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return data;

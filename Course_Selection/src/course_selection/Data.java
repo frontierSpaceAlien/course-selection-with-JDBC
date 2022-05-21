@@ -31,6 +31,12 @@ public class Data {
     boolean updateFlag = false;
     boolean backToLoginFlag = false;
     boolean exitFlag = false;
+    boolean validateEmail = true;
+    boolean validateUsername = false;
+    boolean validateFname = false;
+    boolean validateLname = false;
+    boolean validatePassword = false;
+    boolean checkIfAtLogin = false;
     ArrayList<String> course = new ArrayList<String>();
     ArrayList<String> stream = new ArrayList<String>();
     String username = "";

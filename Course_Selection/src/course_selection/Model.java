@@ -17,11 +17,13 @@ public class Model extends Observable {
     public Data data;
     public Database db;
     public Student student;
+    public ValidateFields valid;
 
     public Model() {
         this.db = new Database();
         this.data = new Data();
         this.student = new Student("", "", "");
+        this.valid = new ValidateFields();
         db.dbsetup();
     }
 
@@ -50,6 +52,37 @@ public class Model extends Observable {
         if (data.createUserFlag) {
             this.db.saveUser(username, fName, lName, password, phNum, email);
         }
+        this.setChanged();
+        this.notifyObservers(this.data);
+
+    }
+    
+    public void checkEmailField(String email){
+        this.data = valid.validateEmail(email);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void checkUsernameField(String username){
+        this.data = valid.validationUsername(username);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void checkFnameField(String fName){
+        this.data = valid.validationFname(fName);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void checkLnameField(String lName){
+        this.data = valid.validationlName(lName);
+        this.setChanged();
+        this.notifyObservers(this.data);
+    }
+    
+    public void checkPasswordField(String password){
+        this.data = valid.validationPassword(password);
         this.setChanged();
         this.notifyObservers(this.data);
     }

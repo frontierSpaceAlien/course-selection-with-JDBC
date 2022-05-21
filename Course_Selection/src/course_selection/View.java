@@ -335,12 +335,13 @@ class View extends JFrame implements Observer {
 
         if (data.registerFlag) {
             data.registerFlag = false;
+            data.checkIfAtLogin = false;
             this.registerStart();
-            
+
         } else if (data.addGUIFlag) {
             data.addGUIFlag = false;
             this.displayCourseSelect();
-            
+
         } else if (data.exitFlag) {
             data.exitFlag = false;
             int dialogue = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?\nAny unsaved selections will be lost!",
@@ -352,13 +353,14 @@ class View extends JFrame implements Observer {
                 JOptionPane.getRootFrame().dispose();
             }
         } else if (data.backToLoginFlag) {
-            data.passwordFlag = false;
-            data.loginFlag = false;
-
+            data.backToLoginFlag = false;
             int dialogue = JOptionPane.showConfirmDialog(null, "Are you sure you want to go back to login?\nAny unsaved selections will be lost!",
                     "Course Selection", JOptionPane.YES_NO_OPTION);
 
             if (dialogue == JOptionPane.YES_OPTION) {
+                data.passwordFlag = false;
+                data.loginFlag = false;
+                data.checkIfAtLogin = true;
                 this.back();
             } else {
                 JOptionPane.getRootFrame().dispose();
@@ -367,40 +369,46 @@ class View extends JFrame implements Observer {
         } else if (data.saveToDatabase) {
             data.saveToDatabase = false;
             JOptionPane.showMessageDialog(this.mainMenu, "Courses successfully saved!");
-            
+
         } else if (data.checkForExist) {
             data.checkForExist = false;
             this.existDialogue();
-            
+
         } else if (data.removeFromTable) {
             data.removeFromTable = false;
             if (cTable.getSelectedRow() != -1) {
                 tableModel.removeRow(cTable.getSelectedRow());
             }
-            
+
         } else if (data.cancelCourseMenu) {
             modal.setVisible(false);
             jListModel.clear();
             data.cancelCourseMenu = false;
             
+          
+// this else if loop has multiple checks whether the user has 4 papers selected already.
+// It also checks if the user is trying to add semester 1 papers with semester 2 and vice versa.
         } else if (data.confirmCourse) {
             String upper = "17";
             String lower = "10";
             String upper2 = "54";
             String lower2 = "50";
-
+            
+// gets the user's pre-selected papers. It also splits the string for easier tracking
+// eg 'COMP500/50' split into 'COMP500','50' and saves into 2 different arraylists 
             for (int i = 0; i < jListModel.size(); i++) {
                 String[] split = jListModel.get(i).split("/");
                 saveStreamList.add(split[1]);
                 saveCourseList.add(split[0]);
             }
-
+// checks the table for any papers and saves it into an arraylist
             for (int j = 0; j < cTable.getRowCount(); j++) {
                 for (int f = 0; f < cTable.getColumnCount(); f++) {
                     saveTableValues.add(cTable.getValueAt(j, f));
                 }
             }
-
+// converts the object value of the saved table values into strings and saves
+// it into a string arraylist.
             for (int e = 0; e < saveTableValues.size(); e++) {
                 saveTableCourseCode.add(saveTableValues.get(e).toString());
                 saveTableStreamCode.add(saveTableValues.get(++e).toString());
@@ -409,13 +417,15 @@ class View extends JFrame implements Observer {
             if (tableModel.getRowCount() == MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You have 4 papers added already!");
                 data.confirmCourse = false;
-                
+
             } else if (tableModel.getRowCount() + jListModel.getSize() > MAXPAPERS) {
                 JOptionPane.showMessageDialog(this.modal, "You cannot exceed 4 papers");
                 data.confirmCourse = false;
-                
-            } else {
 
+            } else {
+// nested for and if loop. The for loops iterate through both arrayLists and 
+// the if loop checks if the user already has the same paper added.
+// if the nested if loop is true then it breaks the entire loop 
                 for (String e : saveTableCourseCode) {
                     for (String f : saveCourseList) {
                         if (e.contains(f)) {
@@ -425,7 +435,11 @@ class View extends JFrame implements Observer {
                         }
                     }
                 }
-
+// nested for and if loops. Both for loops iterate through both arraylists 
+// containing the course code and stream number. The first nested if loop 
+// checks the table if it has semester 1 papers or semester 2 papers.
+// The second nested if loop checks the user's pre-selected papers and checks
+// if the pre-selected papers are in the same semesters.
                 for (String e : saveTableStreamCode) {
                     for (String f : saveStreamList) {
                         if (e.compareTo(lower) > 0 && e.compareTo(upper) < 0) {
@@ -454,9 +468,12 @@ class View extends JFrame implements Observer {
                 jListModel.clear();
                 data.confirmCourse = false;
             }
-            
-        } else if (data.populateJListFlag) {
 
+        } else if (data.populateJListFlag) {
+// similar conceptually as the above else if loop. 
+
+//this if loop gets the selected string from the combobox and splits it into 2 different strings
+// It then saves into a string
             if (jListModel.getSize() < MAXPAPERS) {
                 courseString = String.valueOf(courseList.getSelectedItem());
                 String[] splitCourseString = courseString.split("/");
@@ -472,7 +489,8 @@ class View extends JFrame implements Observer {
                     courseStream = split[1];
                     saveCourseCode.add(split[0]);
                 }
-
+// checks if there are 2 papers from different semester and shows a message to the user
+// It also checks if the user has 4 or more papers pre-selected
                 if (jListModel.isEmpty()) {
                     jListModel.addElement(courseString);
                     courseAddList.setModel(jListModel);
@@ -522,7 +540,7 @@ class View extends JFrame implements Observer {
             }
 
             data.removeJListFlag = false;
-            
+// This else if populates the combobox according to which semester the user picks     
         } else if (data.populateCourseBoxFlag) {
             comboBoxModel.removeAllElements();
             for (int i = 0; i < data.course.size(); i++) {
@@ -531,25 +549,43 @@ class View extends JFrame implements Observer {
             courseList.setModel(comboBoxModel);
 
         } else if (data.backFlag) {
+            data.checkIfAtLogin = true;
             this.back();
             data.backFlag = false;
-            
+
+        } else if (!data.validateEmail) {
+            data.validateEmail = true;
+            JOptionPane.showMessageDialog(this, "Please enter a valid email address");
+        } else if (data.validateFname) {
+            data.validateFname = false;
+            JOptionPane.showMessageDialog(this, "Please enter a first name");
+        } else if (data.validateLname) {
+            data.validateLname = false;
+            JOptionPane.showMessageDialog(this, "Please enter a last name");
+        } else if (data.validateUsername) {
+            data.validateUsername = false;
+            JOptionPane.showMessageDialog(this, "Please enter a username");
+        } else if (data.validatePassword) {
+            data.validatePassword = false;
+            JOptionPane.showMessageDialog(this, "Please enter a password");
         } else if (data.createUserFlag) {
             JOptionPane.showMessageDialog(this, "Register Successful");
             this.back();
             data.createUserFlag = false;
-            
+
         } else if (!data.invalidFlag) {
             JOptionPane.showMessageDialog(this, "User already exists!");
-            
-        } else if (!data.passwordFlag || !data.loginFlag) {
-            JOptionPane.showMessageDialog(this, "Invalid Login");
-            
-        } else if (data.passwordFlag && data.loginFlag) {
-            uID.setText("ID: " + data.id);
-            suName.setText("Username: " + data.username);
-            sName.setText("Name: " + data.name);
-            this.studentMenu();
+
+        } else if (data.checkIfAtLogin) {
+            if (!data.passwordFlag || !data.loginFlag) {
+                JOptionPane.showMessageDialog(this, "Invalid Login");
+                
+            } else if (data.passwordFlag && data.loginFlag) {
+                uID.setText("ID: " + data.id);
+                suName.setText("Username: " + data.username);
+                sName.setText("Name: " + data.name);
+                this.studentMenu();
+            }
         }
     }
 

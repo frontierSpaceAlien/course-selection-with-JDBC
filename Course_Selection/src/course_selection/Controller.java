@@ -47,6 +47,11 @@ class Controller implements ActionListener {
                 String regPw = this.view.getPwrInput();
                 String phone = this.view.getPhInput();
                 String regEmail = this.view.getEmail();
+                this.model.checkEmailField(regEmail);
+                this.model.checkUsernameField(username);
+                this.model.checkFnameField(fname);
+                this.model.checkLnameField(lname);
+                this.model.checkPasswordField(regPw);
                 this.model.checkNewRegUser(username, fname, lname, regPw, phone, regEmail);
                 break;
             case "Log in":
