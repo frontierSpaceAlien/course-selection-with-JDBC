@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package course_selection;
+package MVC;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,12 +13,12 @@ import java.util.ArrayList;
  *
  * @author Derek Lien
  */
-class Controller implements ActionListener {
+public class Controller implements ActionListener {
 
     Model model;
     View view;
 
-    Controller(View view, Model model) {
+    public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
         this.view.addActionListener(this);

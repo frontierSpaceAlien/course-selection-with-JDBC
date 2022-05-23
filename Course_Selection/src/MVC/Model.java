@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package course_selection;
+package MVC;
 
+import Data.ValidateFields;
+import Data.Student;
+import Data.Data;
+import Database.Database;
 import java.util.ArrayList;
 import java.util.Observable;
 

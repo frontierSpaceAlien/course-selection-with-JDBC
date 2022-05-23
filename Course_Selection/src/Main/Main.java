@@ -3,20 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package course_selection;
+package Main;
 
-import javax.swing.UIManager;
+import MVC.Model;
+import MVC.View;
+import MVC.Controller;
+import com.formdev.flatlaf.FlatLightLaf;
 
 /**
  *
  * @author Derek Lien
  */
-public class GUIMain {
+public class Main {
 
     public static void main(String[] args) {
 
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            FlatLightLaf.setup();
         } catch (Exception ignored) {
         }
 

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package course_selection;
+package MVC;
 
+import Data.Data;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Derek Lien
  */
-class View extends JFrame implements Observer {
+public class View extends JFrame implements Observer {
 
     private JFrame addFrame = new JFrame();
     private JPanel userPanel = new JPanel();
@@ -47,7 +48,7 @@ class View extends JFrame implements Observer {
     private JLabel phNum = new JLabel("Phone Number: ");
     private JLabel pw = new JLabel("Password: ");
     private JLabel pwrLabel = new JLabel("Password: ");
-    private JLabel logMessage = new JLabel("Course Selection");
+    private JLabel logMessage = new JLabel("Login");
     private JLabel regMessage = new JLabel("Register");
     private JLabel suName = new JLabel();
     private JLabel sName = new JLabel();
@@ -97,7 +98,7 @@ class View extends JFrame implements Observer {
 
     public View() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(350, 200);
+        this.setSize(300, 180);
         this.setLocationRelativeTo(null);
 
         userPanel.setLayout(null);
@@ -128,7 +129,7 @@ class View extends JFrame implements Observer {
     public void back() {
         eLog.setText("");
         pwInput.setText("");
-        this.setSize(350, 200);
+        this.setSize(300, 180);
         this.getContentPane().removeAll();
         this.setLocationRelativeTo(null);
         this.add(userPanel);

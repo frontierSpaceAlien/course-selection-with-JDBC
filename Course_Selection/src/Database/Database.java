@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package course_selection;
+package Database;
 
+import Data.Student;
+import Data.Data;
+import Data.ValidateFields;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -206,7 +209,7 @@ public class Database {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-// checks if the text the user entered is valid or not
+// checks if the login is correct
     public Data checkLoginUser(String email, char[] password) {
         Data data = new Data();
         data.checkIfAtLogin = true;
