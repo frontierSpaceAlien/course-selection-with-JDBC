@@ -49,6 +49,19 @@ public class Model extends Observable {
         this.notifyObservers(this.data);
     }
 
+    /**
+     * 
+     * @param username
+     * @param fName
+     * @param lName
+     * @param password
+     * @param phNum
+     * @param email 
+     * 
+     * This checks if the createUserFlag is true.
+     * If the flag is true then it saves the user's 
+     * entered information into the database.
+     */
     public void checkNewRegUser(String username, String fName, String lName,
             String password, String phNum, String email) {
         this.data = this.db.checkNewRegUser(username, fName, lName, password, phNum, email);
@@ -91,6 +104,15 @@ public class Model extends Observable {
         this.notifyObservers(this.data);
     }
 
+    /**
+     * 
+     * @param email
+     * @param password
+     * 
+     * This checks for the loginFlag and the passwordFlag.
+     * If both flags are true, then it gets the user's respective 
+     * information from the database.
+     */
     public void checkLogin(String email, char[] password) {
         this.data = this.db.checkLoginUser(email, password);
         if (data.loginFlag || data.passwordFlag) {

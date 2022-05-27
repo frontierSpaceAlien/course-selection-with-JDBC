@@ -83,6 +83,12 @@ public class Controller implements ActionListener {
             case "Remove":
                 this.model.removeFromTable();
                 break;
+           /**
+            * Iterates through the table and saves both the course code and
+            * the stream number into array lists.
+            * 
+            * The array lists are then passed to the model class.
+            */
             case "Save":
                 ArrayList<String> saveTableCourseCode = new ArrayList<String>();
                 ArrayList<Integer> saveTableStreamCode = new ArrayList<Integer>();
